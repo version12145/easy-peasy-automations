@@ -210,16 +210,6 @@
   0%, 100% { transform: translateY(0) scale(1); }
   50%      { transform: translateY(-10px) scale(1.03); }
 }
-@keyframes logo-glow {
-  0%, 100% { opacity: 0.45; transform: scale(1); }
-  50%      { opacity: 0.9;  transform: scale(1.18); }
-}
-@keyframes spin-slow {
-  to { transform: rotate(360deg); }
-}
-@keyframes spin-reverse-slow {
-  to { transform: rotate(-360deg); }
-}
 
 @utility animate-fade-up {
   animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
