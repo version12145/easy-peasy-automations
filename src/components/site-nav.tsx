@@ -34,9 +34,9 @@ export function SiteNav() {
           scrolled ? "translate-y-0 scale-[0.99]" : ""
         }`}
       >
-        <Link to="/" className="flex items-center gap-2 pl-1 pr-1 sm:pr-2">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl grad-navy text-white font-black">V</span>
-          <span className="hidden text-sm font-bold tracking-tight text-foreground sm:inline">VEducate</span>
+        <Link to="/" className="flex items-center gap-2.5 pl-1 pr-1 sm:pr-2" aria-label="VEducate Academy">
+          <img src={logo.url} alt="VEducate Academy" className="h-6 w-auto shrink-0 sm:h-7" />
+          <span className="hidden text-sm font-bold tracking-tight text-navy sm:inline">VEducate</span>
         </Link>
 
         <div className="mx-2 hidden h-6 w-px bg-border sm:block" />
