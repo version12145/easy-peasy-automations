@@ -31,19 +31,22 @@ const categoriesQO = queryOptions({
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "VEducate Academy — A premium knowledge hub for AI, cloud & engineering" },
+      { title: "VEducate Academy — AI-Powered Learning for Engineers & Students" },
       {
         name: "description",
         content:
-          "Editorial articles, deep guides and learning collections on artificial intelligence, cloud engineering, cyber security and career craft.",
+          "VEducate Academy is an AI-powered education and technology platform offering expert tutorials, programming guides, engineering insights, cloud computing resources, cybersecurity knowledge, career guidance, and practical learning for students and professionals.",
       },
-      { property: "og:title", content: "VEducate Academy — Knowledge Hub" },
+      { property: "og:title", content: "VEducate Academy — Knowledge Hub for AI, Cloud & Engineering" },
       {
         property: "og:description",
-        content: "Editorial guides on AI, cloud, security and engineering craft.",
+        content:
+          "Master AI, programming, cloud, cybersecurity, engineering and career craft through expert articles, practical tutorials, and industry insights.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
     ],
+    links: [{ rel: "canonical", href: "/" }],
   }),
   loader: async ({ context }) => {
     await Promise.all([
