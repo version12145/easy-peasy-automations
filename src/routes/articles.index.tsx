@@ -66,14 +66,14 @@ function ArticlesPage() {
   useEffect(() => {
     const t = setTimeout(() => {
       if (qInput === q) return;
-      navigate({ search: (prev) => ({ ...prev, q: qInput, page: 1 }) });
+      navigate({ search: (prev: { page: number; q: string; category: string }) => ({ ...prev, q: qInput, page: 1 }) });
     }, 350);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qInput]);
 
   const setCategory = (slug: string) => {
-    navigate({ search: (prev) => ({ ...prev, category: slug, page: 1 }) });
+    navigate({ search: (prev: { page: number; q: string; category: string }) => ({ ...prev, category: slug, page: 1 }) });
   };
   const clearAll = () => navigate({ search: { page: 1, q: "", category: "" } });
   const hasFilters = Boolean(q || category);
@@ -191,7 +191,7 @@ function ArticlesPage() {
           <div className="mt-14 grid grid-cols-[auto_1fr_auto] items-center gap-4">
             <Link
               to="/articles"
-              search={(prev) => ({ ...prev, page: Math.max(1, page - 1) })}
+              search={(prev: { page: number; q: string; category: string }) => ({ ...prev, page: Math.max(1, page - 1) })}
               disabled={page <= 1}
               className={`inline-flex items-center gap-2 rounded-full glass px-5 py-2.5 text-sm font-semibold ${
                 page <= 1 ? "pointer-events-none opacity-40" : "hover:bg-secondary"
@@ -204,7 +204,7 @@ function ArticlesPage() {
             </div>
             <Link
               to="/articles"
-              search={(prev) => ({ ...prev, page: Math.min(data.totalPages, page + 1) })}
+              search={(prev: { page: number; q: string; category: string }) => ({ ...prev, page: Math.min(data.totalPages, page + 1) })}
               disabled={page >= data.totalPages}
               className={`inline-flex items-center gap-2 rounded-full grad-navy px-5 py-2.5 text-sm font-semibold text-white shadow-navy ${
                 page >= data.totalPages ? "pointer-events-none opacity-40" : "hover:opacity-95"
