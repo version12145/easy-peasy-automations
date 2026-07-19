@@ -136,73 +136,11 @@ function Home() {
               </div>
             </div>
 
-            {/* Right — floating featured card */}
-            {heroSecondary ? (
-              <div className="lg:col-span-6 animate-fade-up" style={{ animationDelay: "120ms" }}>
-                <div className="relative">
-                  <div className="pointer-events-none absolute -inset-4 -z-10 rounded-[2rem] grad-navy opacity-10 blur-2xl" />
-                  <Link
-                    to="/articles/$slug"
-                    params={{ slug: heroSecondary.slug }}
-                    className="group block glass-strong hover-lift overflow-hidden rounded-3xl"
-                  >
-                    <div className="relative aspect-[5/4] w-full overflow-hidden bg-surface-2">
-                      {heroSecondary.image ? (
-                        <img
-                          src={heroSecondary.image}
-                          alt={heroSecondary.imageAlt}
-                          className="h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="relative h-full w-full grad-navy overflow-hidden">
-                          {/* soft radial spotlight */}
-                          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(120,170,255,0.35),transparent_60%)]" />
-                          {/* rotating conic ring */}
-                          <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 animate-spin-slow"
-                               style={{ background: "conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.35) 60deg, transparent 140deg, rgba(120,170,255,0.5) 220deg, transparent 320deg)", maskImage: "radial-gradient(circle, black 55%, transparent 70%)", WebkitMaskImage: "radial-gradient(circle, black 55%, transparent 70%)" }} />
-                          {/* counter-rotating dashed ring */}
-                          <div className="absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-white/20 animate-spin-reverse-slow" />
-                          {/* pulsing glow behind logo */}
-                          <div className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue/40 blur-3xl animate-logo-glow" />
-                          {/* logo */}
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <img
-                              src={veducateMark.url}
-                              alt="VEducate Academy"
-                              className="h-32 w-32 sm:h-40 sm:w-40 object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.45)] animate-logo-float"
-                            />
-                          </div>
-                        </div>
-                      )}
-                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/70 to-transparent" />
-                      <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                        {heroSecondary.category ? (
-                          <span className="inline-flex items-center rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-semibold backdrop-blur-md">
-                            {heroSecondary.category.name}
-                          </span>
-                        ) : null}
-                        <h3 className="mt-3 text-xl sm:text-2xl font-bold leading-tight tracking-tight">
-                          {heroSecondary.title}
-                        </h3>
-                        <div className="mt-3 flex items-center gap-2 text-xs opacity-90">
-                          <span>{heroSecondary.author?.name ?? "VEducate"}</span>
-                          <span>·</span>
-                          <Clock className="h-3 w-3" /> {heroSecondary.readingTime} min
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
+            {/* Right — interactive liquid logo */}
+            <div className="lg:col-span-6 animate-fade-up" style={{ animationDelay: "120ms" }}>
+              <HeroLogo />
+            </div>
 
-                  {/* Floating badge */}
-                  <div className="absolute -left-3 top-6 hidden sm:block animate-float">
-                    <div className="glass-strong flex items-center gap-2 rounded-full px-3 py-2 text-xs font-medium">
-                      <TrendingUp className="h-3.5 w-3.5 text-blue" />
-                      AI Powered Knowledge Platform
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : null}
           </div>
         </div>
       </section>
