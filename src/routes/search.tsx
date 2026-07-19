@@ -25,6 +25,8 @@ const searchSchema = z.object({
   page: fallback(z.number().int(), 1).default(1),
 });
 
+type SearchParams = z.infer<typeof searchSchema>;
+
 export const Route = createFileRoute("/search")({
   validateSearch: zodValidator(searchSchema),
   head: () => ({
