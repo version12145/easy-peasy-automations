@@ -154,7 +154,25 @@ function Home() {
                           className="h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-105"
                         />
                       ) : (
-                        <div className="h-full w-full grad-navy" />
+                        <div className="relative h-full w-full grad-navy overflow-hidden">
+                          {/* soft radial spotlight */}
+                          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(120,170,255,0.35),transparent_60%)]" />
+                          {/* rotating conic ring */}
+                          <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 animate-spin-slow"
+                               style={{ background: "conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.35) 60deg, transparent 140deg, rgba(120,170,255,0.5) 220deg, transparent 320deg)", maskImage: "radial-gradient(circle, black 55%, transparent 70%)", WebkitMaskImage: "radial-gradient(circle, black 55%, transparent 70%)" }} />
+                          {/* counter-rotating dashed ring */}
+                          <div className="absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-white/20 animate-spin-reverse-slow" />
+                          {/* pulsing glow behind logo */}
+                          <div className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue/40 blur-3xl animate-logo-glow" />
+                          {/* logo */}
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <img
+                              src={veducateMark.url}
+                              alt="VEducate Academy"
+                              className="h-32 w-32 sm:h-40 sm:w-40 object-contain drop-shadow-[0_10px_30px_rgba(0,0,0,0.45)] animate-logo-float"
+                            />
+                          </div>
+                        </div>
                       )}
                       <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/70 to-transparent" />
                       <div className="absolute inset-x-0 bottom-0 p-6 text-white">
