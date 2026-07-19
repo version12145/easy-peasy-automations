@@ -72,6 +72,8 @@ function ArticlesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qInput]);
 
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
   const setCategory = (slug: string) => {
     navigate({ search: (prev: { page: number; q: string; category: string }) => ({ ...prev, category: slug, page: 1 }) });
   };
