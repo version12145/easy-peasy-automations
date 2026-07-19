@@ -137,7 +137,7 @@ export function SiteNav() {
               </Link>
             ))}
             <Suspense fallback={null}>
-              <MobileCategories onNavigate={() => setOpen(false)} />
+              <MobileTrending onNavigate={() => setOpen(false)} />
             </Suspense>
           </div>
         </div>
@@ -146,23 +146,25 @@ export function SiteNav() {
   );
 }
 
-function MobileCategories({ onNavigate }: { onNavigate: () => void }) {
-  const { data: cats } = useSuspenseQuery(navCategoriesQO);
-  if (!cats.length) return null;
+function MobileTrending({ onNavigate }: { onNavigate: () => void }) {
+  const { data: tags } = useSuspenseQuery(trendingTagsQO);
+  const top = tags.slice(0, 10);
+  if (!top.length) return null;
   return (
     <>
       <div className="mt-2 border-t border-border/60 pt-2 px-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-        Topics
+        Trending Topics
       </div>
-      {cats.map((c) => (
+      {top.map((t, i) => (
         <Link
-          key={c.id}
-          to="/category/$slug"
-          params={{ slug: c.slug }}
+          key={t.id}
+          to="/tag/$slug"
+          params={{ slug: t.slug }}
           onClick={onNavigate}
-          className="block rounded-xl px-4 py-2.5 text-sm font-medium text-foreground hover:bg-secondary"
+          className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-foreground hover:bg-secondary"
         >
-          {c.name}
+          <span className="w-5 shrink-0 text-center">{i < 3 ? "🔥" : ""}</span>
+          <span className="truncate">{t.name}</span>
         </Link>
       ))}
     </>
