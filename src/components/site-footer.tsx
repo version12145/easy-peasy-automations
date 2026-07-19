@@ -47,10 +47,10 @@ export function SiteFooter() {
         <div className="grid gap-12 lg:grid-cols-[1.4fr_2fr]">
           <div>
             <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl grad-navy text-white font-black">V</span>
+              <img src={logo.url} alt="VEducate Academy" className="h-9 w-auto shrink-0" />
               <div className="min-w-0">
-                <div className="text-lg font-bold tracking-tight text-foreground">VEducate Academy</div>
-                <div className="text-sm text-muted-foreground">Empowering learning with AI.</div>
+                <div className="text-lg font-bold tracking-tight text-navy">VEducate Academy</div>
+                <div className="text-sm text-muted-foreground italic">Don't just learn tech, build it.</div>
               </div>
             </div>
             <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
