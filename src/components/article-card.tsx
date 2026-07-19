@@ -52,7 +52,7 @@ export function ArticleCard({ article, size = "md", index = 0 }: { article: Arti
             </p>
           ) : null}
 
-          <div className="mt-5 flex items-center justify-between gap-3 pt-4 border-t border-border">
+          <div className="mt-auto flex items-center justify-between gap-3 pt-4 border-t border-border">
             <div className="flex min-w-0 items-center gap-2.5">
               {article.author?.avatar ? (
                 <img src={article.author.avatar} alt={article.author.name} className="h-7 w-7 shrink-0 rounded-full ring-1 ring-border" />
