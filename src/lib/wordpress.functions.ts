@@ -297,6 +297,6 @@ export const getHomepage = createServerFn({ method: "GET" })
       latest: latestRaw.map(normalizePost),
       categories,
       sections: sectionResults.filter((s) => s.articles.length > 0),
-      totalArticles: Number(latestRes.res.headers.get("x-wp-total") ?? latestRaw.length),
+      totalArticles: Number(latestRes?.res.headers.get("x-wp-total") ?? latestRaw.length),
     };
   });
