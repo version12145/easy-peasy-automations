@@ -18,6 +18,7 @@ import { formatDate, type Category } from "@/lib/wordpress";
 import { ArticleCard } from "@/components/article-card";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
+import { HeroLogo } from "@/components/hero-logo";
 import veducateMark from "@/assets/veducate-mark.png.asset.json";
 
 const latestQO = queryOptions({
