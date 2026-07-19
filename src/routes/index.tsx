@@ -405,8 +405,9 @@ function Home() {
       {editorPicks.length > 0 ? (
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
           <div className="mb-10">
-            <div className="text-xs font-semibold uppercase tracking-widest text-blue">Editor's picks</div>
-            <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Handpicked reads</h2>
+            <div className="text-xs font-semibold uppercase tracking-widest text-blue">Editor's Picks</div>
+            <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Handpicked by the editorial team</h2>
+            <p className="mt-3 max-w-2xl text-muted-foreground">Articles featuring practical insights, industry trends and expert knowledge recommended by the VEducate Academy editorial team.</p>
           </div>
 
           <div className="space-y-5">
