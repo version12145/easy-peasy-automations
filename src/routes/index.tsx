@@ -64,12 +64,19 @@ function tintFor(slug: string) {
 function Home() {
   const { data: home } = useSuspenseQuery(homeQO);
 
+  // Enforce fixed content pillars — hide any WP category that isn't in the taxonomy.
+  const pillarCategories = filterAndOrderPillarCategories(home.categories);
+  const pillarSlugs = new Set(pillarCategories.map((c) => c.slug));
+  const pillarSections = home.sections
+    .filter((s) => pillarSlugs.has(s.category.slug))
+    .sort((a, b) => filterAndOrderPillarCategories([a.category, b.category]).findIndex((c) => c.slug === a.category.slug) === 0 ? -1 : 1);
+
   // WordPress sticky posts drive "Featured". Fallback to newest post so the slot never sits empty.
   const feature: Article | undefined = home.featured[0] ?? home.latest[0];
   const latestGrid = home.latest
     .filter((a) => a.id !== feature?.id)
     .slice(0, 6);
-  const trending = home.categories.slice(0, 8);
+  const trending = pillarCategories.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
