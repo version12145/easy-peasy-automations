@@ -178,7 +178,7 @@ function Home() {
                   <div className="absolute -left-3 top-6 hidden sm:block animate-float">
                     <div className="glass-strong flex items-center gap-2 rounded-full px-3 py-2 text-xs font-medium">
                       <TrendingUp className="h-3.5 w-3.5 text-blue" />
-                      Trending this week
+                      AI Powered Knowledge Platform
                     </div>
                   </div>
                 </div>
