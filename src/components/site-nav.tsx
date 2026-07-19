@@ -101,7 +101,7 @@ export function SiteNav() {
             </Link>
           ))}
           <Suspense fallback={null}>
-            <CategoriesDropdown />
+            <TrendingDropdown />
           </Suspense>
         </div>
 
