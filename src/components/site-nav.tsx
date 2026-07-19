@@ -62,13 +62,6 @@ export function SiteNav() {
             <Search className="h-4 w-4" />
           </button>
           <button
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="grid h-9 w-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
-          <button
             onClick={() => setOpen((v) => !v)}
             aria-label="Menu"
             className="grid h-9 w-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:hidden"
