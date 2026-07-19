@@ -47,15 +47,20 @@ function TodayPage() {
 
       <header className="hero-gradient pt-32 sm:pt-40 pb-14">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="h-4 w-4" /> Home
-          </Link>
-          <div className="mt-6 inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-xs font-semibold uppercase tracking-widest text-blue">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-blue" />
-            </span>
-            Live · Last 24 hours
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 rounded-full glass px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground hover:bg-secondary"
+            >
+              <ArrowLeft className="h-4 w-4" /> Home
+            </Link>
+            <div className="inline-flex items-center gap-2 rounded-full glass px-4 py-2 text-xs font-semibold uppercase tracking-widest text-blue">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-blue" />
+              </span>
+              Live · Last 24 hours
+            </div>
           </div>
           <h1 className="mt-4 text-editorial text-5xl sm:text-6xl lg:text-7xl text-foreground">
             Today's Updates.
