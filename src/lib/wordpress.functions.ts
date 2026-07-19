@@ -10,12 +10,25 @@ import {
 } from "./wordpress";
 
 async function wpFetch(path: string): Promise<{ res: Response; body: string }> {
-  const url = `${WP_API}${path}`;
-  try {
-    const res = await fetch(url, { headers: { Accept: "application/json" } });
-    const body = await res.text();
+  const lovableApiKey = process.env.LOVABLE_API_KEY;
+  const wordpressApiKey = process.env.WORDPRESS_API_KEY;
+  const useGateway = Boolean(lovableApiKey && wordpressApiKey);
+  const url = useGateway
+    ? `https://connector-gateway.lovable.dev/wordpress${path}`
+    : `${WP_API}${path}`;
 
-    if (!res.ok) {
+  const headers: Record<string, string> = { Accept: "application/json" };
+  if (useGateway) {
+    headers.Authorization = `Bearer ${lovableApiKey}`;
+    headers["X-Connection-Api-Key"] = wordpressApiKey!;
+  }
+
+  try {
+    const res = await fetch(url, { headers });
+    const body = await res.text();
+    const contentType = res.headers.get("content-type") ?? "";
+
+    if (!res.ok || !contentType.includes("application/json")) {
       console.warn(`WordPress ${res.status} ${res.statusText} for ${path}: ${body.slice(0, 200)}`);
       return { res, body: "" };
     }
