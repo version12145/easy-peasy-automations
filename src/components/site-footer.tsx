@@ -4,38 +4,44 @@ import logo from "@/assets/veducate-mark.png.asset.json";
 
 const COLS = [
   {
-    heading: "Company",
-    links: [
-      { label: "About", to: "/" },
-      { label: "Editorial standards", to: "/" },
-      { label: "Contact", to: "/" },
-      { label: "Careers", to: "/" },
-    ],
-  },
-  {
-    heading: "Resources",
+    heading: "Knowledge",
     links: [
       { label: "Articles", to: "/articles" },
-      { label: "Collections", to: "/articles" },
-      { label: "Search", to: "/search" },
-      { label: "RSS", to: "/" },
+      { label: "Latest Updates", to: "/articles" },
+      { label: "Trending Topics", to: "/categories" },
+      { label: "Editor's Picks", to: "/articles" },
+      { label: "Learning Collections", to: "/articles" },
     ],
   },
   {
     heading: "Categories",
     links: [
       { label: "Artificial Intelligence", to: "/categories" },
-      { label: "Cloud Engineering", to: "/categories" },
-      { label: "Cyber Security", to: "/categories" },
-      { label: "Career", to: "/categories" },
+      { label: "Programming", to: "/categories" },
+      { label: "Cloud Computing", to: "/categories" },
+      { label: "Cybersecurity", to: "/categories" },
+      { label: "Engineering", to: "/categories" },
+      { label: "Career Development", to: "/categories" },
     ],
   },
   {
-    heading: "Legal",
+    heading: "Company",
     links: [
-      { label: "Privacy", to: "/" },
-      { label: "Terms", to: "/" },
-      { label: "Cookie policy", to: "/" },
+      { label: "About", to: "/" },
+      { label: "Contact", to: "/" },
+      { label: "Privacy Policy", to: "/" },
+      { label: "Terms of Service", to: "/" },
+      { label: "Careers", to: "/" },
+    ],
+  },
+  {
+    heading: "Resources",
+    links: [
+      { label: "Knowledge Hub", to: "/articles" },
+      { label: "Learning Platform", to: "/articles" },
+      { label: "Documentation", to: "/" },
+      { label: "Community", to: "/" },
+      { label: "Support", to: "/" },
     ],
   },
 ] as const;
@@ -53,25 +59,26 @@ export function SiteFooter() {
                 <div className="text-sm text-muted-foreground italic">Don't just learn tech, build it.</div>
               </div>
             </div>
+
             <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
-              A modern knowledge hub for engineers, students and creators. In-depth guides on AI, cloud, security and career craft.
+              VEducate Academy is a modern AI-powered education and technology platform dedicated to helping students and professionals learn faster, build stronger technical skills, and stay ahead in an ever-changing digital world.
             </p>
 
             <div className="mt-8 glass rounded-2xl p-5">
-              <div className="text-sm font-semibold text-foreground">The Weekly Signal</div>
-              <p className="mt-1 text-xs text-muted-foreground">One curated read every Sunday. No noise.</p>
+              <div className="text-sm font-semibold text-foreground">Stay Ahead with Technology</div>
+              <p className="mt-1 text-xs text-muted-foreground">Curated tutorials, AI research and engineering insights — every week.</p>
               <form className="mt-4 flex gap-2" onSubmit={(e) => e.preventDefault()}>
                 <input
                   type="email"
                   required
-                  placeholder="you@company.com"
+                  placeholder="you@example.com"
                   className="flex-1 min-w-0 rounded-full border border-border bg-background px-4 py-2 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
                 />
                 <button
                   type="submit"
                   className="rounded-full grad-navy px-4 py-2 text-sm font-semibold text-white shadow-navy hover:opacity-90"
                 >
-                  Subscribe
+                  Subscribe Free
                 </button>
               </form>
             </div>
