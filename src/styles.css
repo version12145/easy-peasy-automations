@@ -51,36 +51,36 @@
 :root {
   --radius: 1.25rem;
 
-  --background: #fafbfc;
-  --foreground: #0a0f1c;
+  --background: #eaf3fb;
+  --foreground: #0a1b2e;
 
-  --surface: #ffffff;
-  --surface-2: #f4f6fa;
+  --surface: #f4faff;
+  --surface-2: #dceaf6;
 
-  --card: rgba(255, 255, 255, 0.72);
-  --card-foreground: #0a0f1c;
-  --popover: #ffffff;
-  --popover-foreground: #0a0f1c;
+  --card: rgba(255, 255, 255, 0.55);
+  --card-foreground: #0a1b2e;
+  --popover: #f4faff;
+  --popover-foreground: #0a1b2e;
 
-  --navy: #0b2545;
-  --navy-soft: #13315c;
-  --blue: #2563eb;
-  --blue-soft: #dbeafe;
+  --navy: #0b2a4a;
+  --navy-soft: #14477a;
+  --blue: #1d7ec9;
+  --blue-soft: #cfe4f5;
 
-  --primary: #0b2545;
+  --primary: #0b2a4a;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0b2545;
-  --muted: #f4f6fa;
-  --muted-foreground: #55627a;
-  --accent: #eef2ff;
-  --accent-foreground: #0b2545;
+  --secondary: #d6e6f3;
+  --secondary-foreground: #0b2a4a;
+  --muted: #dceaf6;
+  --muted-foreground: #4a5f7a;
+  --accent: #cfe4f5;
+  --accent-foreground: #0b2a4a;
 
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: rgba(15, 23, 42, 0.08);
-  --input: rgba(15, 23, 42, 0.1);
-  --ring: rgba(37, 99, 235, 0.4);
+  --border: rgba(11, 42, 74, 0.12);
+  --input: rgba(11, 42, 74, 0.14);
+  --ring: rgba(29, 126, 201, 0.45);
 }
 
 .dark {
@@ -129,6 +129,11 @@
 
   body {
     background-color: var(--color-background);
+    background-image:
+      radial-gradient(ellipse 90% 60% at 10% -10%, rgba(29, 126, 201, 0.22), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 100% 10%, rgba(11, 42, 74, 0.18), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 50% 100%, rgba(29, 126, 201, 0.14), transparent 65%);
+    background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
@@ -140,31 +145,31 @@
 }
 
 @utility glass {
-  background: color-mix(in oklab, var(--surface) 65%, transparent);
-  backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid color-mix(in oklab, var(--foreground) 8%, transparent);
-  box-shadow: var(--shadow-glass);
+  background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(207,228,245,0.35));
+  backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: var(--shadow-glass), inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
 @utility glass-strong {
-  background: color-mix(in oklab, var(--surface) 82%, transparent);
-  backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid color-mix(in oklab, var(--foreground) 8%, transparent);
-  box-shadow: var(--shadow-glass-lg);
+  background: linear-gradient(135deg, rgba(255,255,255,0.72), rgba(207,228,245,0.5));
+  backdrop-filter: blur(30px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: var(--shadow-glass-lg), inset 0 1px 0 rgba(255,255,255,0.7);
 }
 
 @utility glass-nav {
-  background: color-mix(in oklab, var(--surface) 70%, transparent);
-  backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid color-mix(in oklab, var(--foreground) 8%, transparent);
-  box-shadow: 0 8px 32px -12px rgba(15, 23, 42, 0.12);
+  background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(207,228,245,0.4));
+  backdrop-filter: blur(26px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 8px 32px -12px rgba(11, 42, 74, 0.18), inset 0 1px 0 rgba(255,255,255,0.65);
 }
 
 @utility hero-gradient {
   background:
-    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(37, 99, 235, 0.12), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 90% 20%, rgba(11, 37, 69, 0.08), transparent 60%),
-    linear-gradient(180deg, var(--surface-2) 0%, var(--background) 100%);
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(29, 126, 201, 0.28), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 20%, rgba(11, 42, 74, 0.15), transparent 60%),
+    linear-gradient(180deg, rgba(207,228,245,0.6) 0%, transparent 100%);
 }
 
 @utility text-editorial {
