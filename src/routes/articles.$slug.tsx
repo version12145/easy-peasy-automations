@@ -26,9 +26,10 @@ export const Route = createFileRoute("/articles/$slug")({
     }
     return { article };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "Article — VEducate Academy" }] };
     const a = loaderData.article;
+    const url = `/articles/${params.slug}`;
     return {
       meta: [
         { title: `${a.title} — VEducate Academy` },
@@ -36,7 +37,28 @@ export const Route = createFileRoute("/articles/$slug")({
         { property: "og:title", content: a.title },
         { property: "og:description", content: a.excerpt },
         { property: "og:type", content: "article" },
+        { property: "og:url", content: url },
         ...(a.image ? [{ property: "og:image", content: a.image }] : []),
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: a.title,
+            description: a.excerpt,
+            datePublished: a.date,
+            ...(a.image ? { image: a.image } : {}),
+            ...(a.author ? { author: { "@type": "Person", name: a.author.name } } : {}),
+            publisher: {
+              "@type": "Organization",
+              name: "VEducate Academy",
+            },
+            mainEntityOfPage: url,
+          }),
+        },
       ],
     };
   },

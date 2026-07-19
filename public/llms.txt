@@ -1,0 +1,16 @@
+# VEducate Academy
+
+> AI-powered knowledge hub with expert tutorials and insights on artificial intelligence, programming, cloud computing, cybersecurity, engineering and career growth for students and professionals.
+
+VEducate Academy is a headless knowledge platform powered by WordPress. Content is organized into categories (topics) and tags (technologies, tools, frameworks). New articles from the last 24 hours are aggregated on the Today page, and Trending Topics surface the most-used tags.
+
+## Pages
+
+- [Home](/): Featured articles, latest posts and topic overview.
+- [Articles](/articles): Every article, with search and category filtering.
+- [Categories](/categories): Browse all topic categories.
+- [Today](/today): Articles published in the last 24 hours.
+
+## Optional
+
+- [Search](/search): Search articles, categories and tags.

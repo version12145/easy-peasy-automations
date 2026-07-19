@@ -21,22 +21,45 @@ const homeQO = queryOptions({
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "VEducate Academy — AI-Powered Learning for Engineers & Students" },
+      { title: "VEducate Academy — AI-Powered Learning Hub" },
       {
         name: "description",
         content:
-          "VEducate Academy is an AI-powered education and technology platform offering expert tutorials, programming guides, engineering insights, cloud computing resources, cybersecurity knowledge, career guidance, and practical learning for students and professionals.",
+          "Expert tutorials and insights on AI, programming, cloud, cybersecurity, engineering and careers for students and professionals.",
       },
-      { property: "og:title", content: "VEducate Academy — Knowledge Hub for AI, Cloud & Engineering" },
+      { property: "og:title", content: "VEducate Academy — AI-Powered Learning Hub" },
       {
         property: "og:description",
         content:
-          "Master AI, programming, cloud, cybersecurity, engineering and career craft through expert articles, practical tutorials, and industry insights.",
+          "Expert tutorials and insights on AI, programming, cloud, cybersecurity, engineering and careers.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "VEducate Academy",
+          url: "/",
+          description:
+            "AI-powered knowledge hub for engineering, programming, cloud, cybersecurity and career growth.",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "/search?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+          publisher: {
+            "@type": "Organization",
+            name: "VEducate Academy",
+            url: "/",
+          },
+        }),
+      },
+    ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(homeQO),
   component: Home,

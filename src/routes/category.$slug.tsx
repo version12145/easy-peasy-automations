@@ -31,13 +31,32 @@ export const Route = createFileRoute("/category/$slug")({
     await context.queryClient.ensureQueryData(articlesQO(category.id, deps.page));
     return { category };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "Category — VEducate Academy" }] };
     const c = loaderData.category;
+    const url = `/category/${params.slug}`;
+    const desc = c.description || `Articles in ${c.name} on VEducate Academy.`;
     return {
       meta: [
         { title: `${c.name} — VEducate Academy` },
-        { name: "description", content: c.description || `Articles in ${c.name}.` },
+        { name: "description", content: desc },
+        { property: "og:title", content: `${c.name} — VEducate Academy` },
+        { property: "og:description", content: desc },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: c.name,
+            description: desc,
+            url,
+          }),
+        },
       ],
     };
   },

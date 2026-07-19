@@ -28,15 +28,32 @@ export const Route = createFileRoute("/tag/$slug")({
     await context.queryClient.ensureQueryData(tagArticlesQO(tag.id, deps.page));
     return { tag };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     if (!loaderData) return { meta: [{ title: "Tag — VEducate Academy" }, { name: "robots", content: "noindex" }] };
     const t = loaderData.tag;
+    const url = `/tag/${params.slug}`;
+    const desc = t.description || `Articles tagged with ${t.name} on VEducate Academy.`;
     return {
       meta: [
         { title: `#${t.name} — VEducate Academy` },
-        { name: "description", content: t.description || `Articles tagged with ${t.name} on VEducate Academy.` },
+        { name: "description", content: desc },
         { property: "og:title", content: `#${t.name} — VEducate Academy` },
-        { property: "og:description", content: t.description || `Articles tagged with ${t.name}.` },
+        { property: "og:description", content: desc },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: `#${t.name}`,
+            description: desc,
+            url,
+          }),
+        },
       ],
     };
   },
