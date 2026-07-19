@@ -26,7 +26,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         try {
           const [articlesResp, categories, tags] = await Promise.all([
             listArticles({ data: { page: 1, perPage: 100 } }),
-            listCategories(),
+            listCategories({ data: { perPage: 100 } }),
             listTags({ data: { perPage: 100 } }),
           ]);
 
