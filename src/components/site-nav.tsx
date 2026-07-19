@@ -7,6 +7,7 @@ import { listCategories } from "@/lib/wordpress.functions";
 
 const STATIC_NAV = [
   { to: "/", label: "Home" },
+  { to: "/today", label: "Today" },
   { to: "/articles", label: "Articles" },
   { to: "/categories", label: "Categories" },
 ] as const;

@@ -41,6 +41,34 @@ export const listArticles = createServerFn({ method: "GET" })
     };
   });
 
+/**
+ * Articles published within the last N hours (default 24).
+ * Uses WordPress `after` query param on the publication date — no new taxonomy,
+ * no duplicated data, articles stay available everywhere else.
+ */
+export const listRecentArticles = createServerFn({ method: "GET" })
+  .inputValidator((d: { hours?: number; page?: number; perPage?: number } = {}) => d)
+  .handler(async ({ data }): Promise<{ articles: Article[]; total: number; totalPages: number; sinceISO: string }> => {
+    const hours = Math.max(1, Math.min(data.hours ?? 24, 24 * 14));
+    const since = new Date(Date.now() - hours * 3600_000);
+    const sinceISO = since.toISOString();
+    const params = new URLSearchParams();
+    params.set("_embed", "1");
+    params.set("per_page", String(Math.min(data.perPage ?? 12, 50)));
+    params.set("page", String(data.page ?? 1));
+    params.set("after", sinceISO);
+    params.set("orderby", "date");
+    params.set("order", "desc");
+    const { res, body } = await wpFetch(`/posts?${params.toString()}`);
+    const raw = JSON.parse(body) as WPPostRaw[];
+    return {
+      articles: raw.map(normalizePost),
+      total: Number(res.headers.get("x-wp-total") ?? raw.length),
+      totalPages: Number(res.headers.get("x-wp-totalpages") ?? 1),
+      sinceISO,
+    };
+  });
+
 export type Tag = { id: number; name: string; slug: string; description: string; count: number };
 
 export const listTags = createServerFn({ method: "GET" })
