@@ -19,6 +19,35 @@ async function wpFetch(path: string): Promise<{ res: Response; body: string }> {
   return { res, body };
 }
 
+function safeJson<T>(body: string | undefined, fallback: T): T {
+  if (!body) return fallback;
+  try {
+    return JSON.parse(body) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+function normalizeTerm(t: WPTerm): Category {
+  return {
+    id: t.id,
+    name: decodeEntities(t.name),
+    slug: t.slug,
+    description: decodeEntities(t.description ?? ""),
+    count: t.count ?? 0,
+  };
+}
+
+function normalizeTag(t: WPTerm): Tag {
+  return {
+    id: t.id,
+    name: decodeEntities(t.name),
+    slug: t.slug,
+    description: decodeEntities(t.description ?? ""),
+    count: t.count ?? 0,
+  };
+}
+
 export const listArticles = createServerFn({ method: "GET" })
   .inputValidator((d: { page?: number; perPage?: number; categoryId?: number; tagId?: number; sticky?: boolean; search?: string; orderby?: "date" | "relevance" | "title"; order?: "asc" | "desc" } = {}) => d)
   .handler(async ({ data }): Promise<{ articles: Article[]; total: number; totalPages: number }> => {
@@ -32,12 +61,12 @@ export const listArticles = createServerFn({ method: "GET" })
     if (data.sticky) params.set("sticky", "true");
     if (data.orderby) params.set("orderby", data.orderby);
     if (data.order) params.set("order", data.order);
-    const { res, body } = await wpFetch(`/posts?${params.toString()}`);
-    const raw = JSON.parse(body) as WPPostRaw[];
+    const postsRes = await wpFetch(`/posts?${params.toString()}`).catch(() => null);
+    const raw = safeJson<WPPostRaw[]>(postsRes?.body, []);
     return {
       articles: raw.map(normalizePost),
-      total: Number(res.headers.get("x-wp-total") ?? raw.length),
-      totalPages: Number(res.headers.get("x-wp-totalpages") ?? 1),
+      total: Number(postsRes?.res.headers.get("x-wp-total") ?? raw.length),
+      totalPages: Number(postsRes?.res.headers.get("x-wp-totalpages") ?? 1),
     };
   });
 
@@ -59,12 +88,12 @@ export const listRecentArticles = createServerFn({ method: "GET" })
     params.set("after", sinceISO);
     params.set("orderby", "date");
     params.set("order", "desc");
-    const { res, body } = await wpFetch(`/posts?${params.toString()}`);
-    const raw = JSON.parse(body) as WPPostRaw[];
+    const postsRes = await wpFetch(`/posts?${params.toString()}`).catch(() => null);
+    const raw = safeJson<WPPostRaw[]>(postsRes?.body, []);
     return {
       articles: raw.map(normalizePost),
-      total: Number(res.headers.get("x-wp-total") ?? raw.length),
-      totalPages: Number(res.headers.get("x-wp-totalpages") ?? 1),
+      total: Number(postsRes?.res.headers.get("x-wp-total") ?? raw.length),
+      totalPages: Number(postsRes?.res.headers.get("x-wp-totalpages") ?? 1),
       sinceISO,
     };
   });
@@ -81,32 +110,19 @@ export const listTags = createServerFn({ method: "GET" })
       order: data.order ?? "desc",
     });
     if (data.search) params.set("search", data.search);
-    const { body } = await wpFetch(`/tags?${params.toString()}`);
-    const raw = JSON.parse(body) as WPTerm[];
-    return raw.map((t) => ({
-      id: t.id,
-      name: decodeEntities(t.name),
-      slug: t.slug,
-      description: decodeEntities(t.description ?? ""),
-      count: t.count ?? 0,
-    }));
+    const tagsRes = await wpFetch(`/tags?${params.toString()}`).catch(() => null);
+    const raw = safeJson<WPTerm[]>(tagsRes?.body, []);
+    return raw.map(normalizeTag);
   });
 
 export const getTagBySlug = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => d)
   .handler(async ({ data }): Promise<Tag | null> => {
     const params = new URLSearchParams({ slug: data.slug });
-    const { body } = await wpFetch(`/tags?${params.toString()}`);
-    const raw = JSON.parse(body) as WPTerm[];
+    const tagsRes = await wpFetch(`/tags?${params.toString()}`).catch(() => null);
+    const raw = safeJson<WPTerm[]>(tagsRes?.body, []);
     if (!raw.length) return null;
-    const t = raw[0];
-    return {
-      id: t.id,
-      name: decodeEntities(t.name),
-      slug: t.slug,
-      description: decodeEntities(t.description ?? ""),
-      count: t.count ?? 0,
-    };
+    return normalizeTag(raw[0]);
   });
 
 export type SearchHitCategory = { id: number; name: string; slug: string; count: number };
@@ -138,19 +154,19 @@ export const siteSearch = createServerFn({ method: "GET" })
     const tagParams = new URLSearchParams({ search: q, per_page: "10", hide_empty: "true" });
 
     const [postsRes, catsRes, tagsRes] = await Promise.all([
-      wpFetch(`/posts?${postParams.toString()}`),
+      wpFetch(`/posts?${postParams.toString()}`).catch(() => null),
       wpFetch(`/categories?${catParams.toString()}`).catch(() => null),
       wpFetch(`/tags?${tagParams.toString()}`).catch(() => null),
     ]);
 
-    const rawPosts = JSON.parse(postsRes.body) as WPPostRaw[];
-    const cats = catsRes ? (JSON.parse(catsRes.body) as WPTerm[]) : [];
-    const tags = tagsRes ? (JSON.parse(tagsRes.body) as WPTerm[]) : [];
+    const rawPosts = safeJson<WPPostRaw[]>(postsRes?.body, []);
+    const cats = safeJson<WPTerm[]>(catsRes?.body, []);
+    const tags = safeJson<WPTerm[]>(tagsRes?.body, []);
 
     return {
       articles: rawPosts.map(normalizePost),
-      total: Number(postsRes.res.headers.get("x-wp-total") ?? rawPosts.length),
-      totalPages: Number(postsRes.res.headers.get("x-wp-totalpages") ?? 1),
+      total: Number(postsRes?.res.headers.get("x-wp-total") ?? rawPosts.length),
+      totalPages: Number(postsRes?.res.headers.get("x-wp-totalpages") ?? 1),
       categories: cats.map((t) => ({ id: t.id, name: decodeEntities(t.name), slug: t.slug, count: t.count ?? 0 })),
       tags: tags.map((t) => ({ id: t.id, name: decodeEntities(t.name), slug: t.slug })),
     };
@@ -160,8 +176,8 @@ export const getArticleBySlug = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => d)
   .handler(async ({ data }): Promise<Article | null> => {
     const params = new URLSearchParams({ _embed: "1", slug: data.slug });
-    const { body } = await wpFetch(`/posts?${params.toString()}`);
-    const raw = JSON.parse(body) as WPPostRaw[];
+    const postsRes = await wpFetch(`/posts?${params.toString()}`).catch(() => null);
+    const raw = safeJson<WPPostRaw[]>(postsRes?.body, []);
     if (!raw.length) return null;
     return normalizePost(raw[0]);
   });
@@ -175,8 +191,8 @@ export const getRelatedArticles = createServerFn({ method: "GET" })
       categories: String(data.categoryId),
       exclude: String(data.excludeId),
     });
-    const { body } = await wpFetch(`/posts?${params.toString()}`);
-    return (JSON.parse(body) as WPPostRaw[]).map(normalizePost);
+    const postsRes = await wpFetch(`/posts?${params.toString()}`).catch(() => null);
+    return safeJson<WPPostRaw[]>(postsRes?.body, []).map(normalizePost);
   });
 
 export const listCategories = createServerFn({ method: "GET" })
@@ -188,32 +204,19 @@ export const listCategories = createServerFn({ method: "GET" })
       orderby: data.orderby ?? "count",
       order: data.order ?? "desc",
     });
-    const { body } = await wpFetch(`/categories?${params.toString()}`);
-    const raw = JSON.parse(body) as WPTerm[];
-    return raw.map((t) => ({
-      id: t.id,
-      name: decodeEntities(t.name),
-      slug: t.slug,
-      description: decodeEntities(t.description ?? ""),
-      count: t.count ?? 0,
-    }));
+    const catsRes = await wpFetch(`/categories?${params.toString()}`).catch(() => null);
+    const raw = safeJson<WPTerm[]>(catsRes?.body, []);
+    return raw.map(normalizeTerm);
   });
 
 export const getCategoryBySlug = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => d)
   .handler(async ({ data }): Promise<Category | null> => {
     const params = new URLSearchParams({ slug: data.slug });
-    const { body } = await wpFetch(`/categories?${params.toString()}`);
-    const raw = JSON.parse(body) as WPTerm[];
+    const catsRes = await wpFetch(`/categories?${params.toString()}`).catch(() => null);
+    const raw = safeJson<WPTerm[]>(catsRes?.body, []);
     if (!raw.length) return null;
-    const t = raw[0];
-    return {
-      id: t.id,
-      name: decodeEntities(t.name),
-      slug: t.slug,
-      description: decodeEntities(t.description ?? ""),
-      count: t.count ?? 0,
-    };
+    return normalizeTerm(raw[0]);
   });
 
 /**
@@ -255,23 +258,11 @@ export const getHomepage = createServerFn({ method: "GET" })
       wpFetch(`/categories?${catParams.toString()}`).catch(() => null),
     ]);
 
-    // Upstream WordPress can be temporarily unavailable; render an empty
-    // homepage rather than crashing the whole route with a 500.
-    const safeParse = <T,>(body: string | undefined, fallback: T): T => {
-      if (!body) return fallback;
-      try { return JSON.parse(body) as T; } catch { return fallback; }
-    };
-    const stickyRaw = safeParse<WPPostRaw[]>(stickyRes?.body, []);
-    const latestRaw = safeParse<WPPostRaw[]>(latestRes?.body, []);
-    const catsRaw = safeParse<WPTerm[]>(catsRes?.body, []);
+    const stickyRaw = safeJson<WPPostRaw[]>(stickyRes?.body, []);
+    const latestRaw = safeJson<WPPostRaw[]>(latestRes?.body, []);
+    const catsRaw = safeJson<WPTerm[]>(catsRes?.body, []);
 
-    const categories: Category[] = catsRaw.map((t) => ({
-      id: t.id,
-      name: decodeEntities(t.name),
-      slug: t.slug,
-      description: decodeEntities(t.description ?? ""),
-      count: t.count ?? 0,
-    }));
+    const categories: Category[] = catsRaw.map(normalizeTerm);
 
     const sectionCats = categories.slice(0, sectionsLimit);
 
