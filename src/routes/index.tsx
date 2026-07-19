@@ -58,12 +58,12 @@ export const Route = createFileRoute("/")({
 });
 
 const COLLECTIONS = [
-  { icon: Brain, title: "Artificial Intelligence", count: 42, hours: 18, tint: "from-blue-500/10 to-indigo-500/10" },
-  { icon: Cloud, title: "Cloud Engineering", count: 36, hours: 24, tint: "from-sky-500/10 to-cyan-500/10" },
-  { icon: Code2, title: "Python Roadmap", count: 28, hours: 16, tint: "from-emerald-500/10 to-teal-500/10" },
-  { icon: Shield, title: "Cyber Security", count: 31, hours: 20, tint: "from-rose-500/10 to-orange-500/10" },
-  { icon: Briefcase, title: "Career Preparation", count: 24, hours: 12, tint: "from-amber-500/10 to-yellow-500/10" },
-  { icon: BookOpen, title: "Engineering Craft", count: 19, hours: 10, tint: "from-violet-500/10 to-fuchsia-500/10" },
+  { icon: Brain, title: "Complete Artificial Intelligence Roadmap", count: 42, hours: 18, tint: "from-blue-500/10 to-indigo-500/10" },
+  { icon: Code2, title: "Python Programming Mastery", count: 36, hours: 22, tint: "from-emerald-500/10 to-teal-500/10" },
+  { icon: Cloud, title: "Cloud Engineering Essentials", count: 30, hours: 20, tint: "from-sky-500/10 to-cyan-500/10" },
+  { icon: Shield, title: "Cybersecurity Fundamentals", count: 28, hours: 16, tint: "from-rose-500/10 to-orange-500/10" },
+  { icon: BookOpen, title: "Full Stack Web Development", count: 34, hours: 26, tint: "from-violet-500/10 to-fuchsia-500/10" },
+  { icon: Briefcase, title: "Placement Preparation Series", count: 24, hours: 14, tint: "from-amber-500/10 to-yellow-500/10" },
 ];
 
 const CAT_ICONS = [Brain, Cloud, Code2, Shield, Briefcase, BookOpen, Sparkles, TrendingUp];
