@@ -258,7 +258,7 @@ function Home() {
                 i === 0 ? "lg:col-span-4 lg:row-span-2" : "lg:col-span-2";
               const size = i === 0 ? "lg" : "md";
               return (
-                <div key={a.id} className={span}>
+                <div key={a.id} className={`${span} h-full`}>
                   <ArticleCard article={a} size={size} index={i} />
                 </div>
               );
