@@ -118,7 +118,7 @@ function Home() {
               {/* Stats — live from WordPress */}
               <div className="mt-12 grid grid-cols-3 gap-3 sm:gap-4">
                 {[
-                  { k: `${pillarCategories.length}`, v: "Content Pillars" },
+                  { k: `${categories.length}`, v: "Content Pillars" },
                   { k: `${home.totalArticles}+`, v: "Published Articles" },
                   { k: `${home.featured.length + home.latest.length}+`, v: "Fresh This Week" },
                 ].map((s) => (
@@ -272,7 +272,7 @@ function Home() {
       ) : null}
 
       {/* CATEGORY SECTIONS — one per fixed content pillar, ordered by taxonomy */}
-      {pillarSections.map((section: HomeSection, idx) => (
+      {sections.map((section: HomeSection, idx) => (
         <CategoryStrip key={section.category.id} section={section} index={idx} />
       ))}
 
