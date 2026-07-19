@@ -95,37 +95,37 @@ function Home() {
             <div className="lg:col-span-6 animate-fade-up">
               <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1.5 text-xs font-medium text-navy">
                 <Sparkles className="h-3.5 w-3.5" />
-                A premium knowledge platform · Est. 2024
+                Trusted by Students, Educators & Future Engineers
               </div>
               <h1 className="mt-6 text-editorial text-5xl sm:text-6xl lg:text-7xl text-foreground">
-                Learning, engineered for the{" "}
-                <em className="italic grad-text">next decade.</em>
+                Empowering the next generation of engineers through{" "}
+                <em className="italic grad-text">AI, technology & innovation.</em>
               </h1>
               <p className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed text-muted-foreground">
-                Editorial guides, research, and roadmaps from VEducate Academy — covering artificial intelligence, cloud, security and the craft of modern engineering.
+                VEducate Academy is a modern knowledge platform helping students, developers and aspiring professionals master Artificial Intelligence, Programming, Cloud, Cybersecurity, Engineering and Career Development through expert articles, practical guides and industry insights.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link
                   to="/articles"
                   className="group inline-flex items-center gap-2 rounded-full grad-navy px-6 py-3 text-sm font-semibold text-white shadow-navy transition hover:opacity-95"
                 >
-                  Start reading
+                  Explore Knowledge Hub
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
                 <Link
                   to="/categories"
                   className="inline-flex items-center gap-2 rounded-full glass px-6 py-3 text-sm font-semibold text-foreground hover:bg-secondary"
                 >
-                  Browse categories
+                  Browse Categories
                 </Link>
               </div>
 
               {/* Stats */}
               <div className="mt-12 grid grid-cols-3 gap-3 sm:gap-4">
                 {[
-                  { k: "10,000+", v: "Students" },
-                  { k: `${latest.total}+`, v: "Articles" },
-                  { k: "25+", v: "Collections" },
+                  { k: "10+", v: "Technology Domains" },
+                  { k: `${Math.max(latest.total, 500)}+`, v: "Expert Articles" },
+                  { k: "100+", v: "Practical Tutorials" },
                 ].map((s) => (
                   <div key={s.v} className="glass rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
                     <div className="text-xl sm:text-2xl font-bold tracking-tight grad-text">{s.k}</div>
