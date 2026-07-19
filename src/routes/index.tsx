@@ -297,9 +297,10 @@ function Home() {
               onSubmit={(e) => e.preventDefault()}
               className="glass-strong rounded-2xl p-4 sm:p-5 bg-white/10 border-white/20"
             >
-              <label className="text-xs font-semibold uppercase tracking-widest text-white/70">Email</label>
+              <label htmlFor="newsletter-email" className="text-xs font-semibold uppercase tracking-widest text-white/70">Email</label>
               <div className="mt-2 flex gap-2">
                 <input
+                  id="newsletter-email"
                   type="email"
                   required
                   placeholder="you@example.com"
