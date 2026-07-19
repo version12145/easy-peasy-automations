@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Github, Linkedin, Twitter, Youtube } from "lucide-react";
+import logo from "@/assets/veducate-mark.png.asset.json";
 
 const COLS = [
   {
