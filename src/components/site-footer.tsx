@@ -59,9 +59,6 @@ export function SiteFooter() {
                 <div className="text-sm text-muted-foreground italic">Don't just learn tech, build it.</div>
               </div>
             </div>
-            <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
-              A modern knowledge hub for engineers, students and creators. In-depth guides on AI, cloud, security and career craft.
-            </p>
 
             <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
               VEducate Academy is a modern AI-powered education and technology platform dedicated to helping students and professionals learn faster, build stronger technical skills, and stay ahead in an ever-changing digital world.
