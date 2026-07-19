@@ -224,8 +224,9 @@ function Home() {
         <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
           <div className="mb-8 flex items-end justify-between">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-widest text-blue">The Feature</div>
-              <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">This week's read</h2>
+              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Editor's Choice</div>
+              <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Featured Insights</h2>
+              <p className="mt-3 max-w-2xl text-muted-foreground">Our most valuable articles, carefully selected by the VEducate Academy editorial team to help you stay ahead in today's rapidly evolving technology landscape.</p>
             </div>
           </div>
 
