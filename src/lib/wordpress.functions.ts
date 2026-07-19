@@ -11,18 +11,31 @@ import {
 
 async function wpFetch(path: string): Promise<{ res: Response; body: string }> {
   const url = `${WP_API}${path}`;
-  const res = await fetch(url, { headers: { Accept: "application/json" } });
-  const body = await res.text();
-  if (!res.ok) {
-    throw new Error(`WordPress ${res.status} ${res.statusText}: ${body.slice(0, 200)}`);
+  try {
+    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    const body = await res.text();
+
+    if (!res.ok) {
+      console.warn(`WordPress ${res.status} ${res.statusText} for ${path}: ${body.slice(0, 200)}`);
+      return { res, body: "" };
+    }
+
+    return { res, body };
+  } catch (error) {
+    console.warn(`WordPress request failed for ${path}`, error);
+    return {
+      res: new Response("", { status: 502, statusText: "WordPress unavailable" }),
+      body: "",
+    };
   }
-  return { res, body };
 }
 
 function safeJson<T>(body: string | undefined, fallback: T): T {
   if (!body) return fallback;
   try {
-    return JSON.parse(body) as T;
+    const parsed = JSON.parse(body) as unknown;
+    if (Array.isArray(fallback) && !Array.isArray(parsed)) return fallback;
+    return parsed as T;
   } catch {
     return fallback;
   }
