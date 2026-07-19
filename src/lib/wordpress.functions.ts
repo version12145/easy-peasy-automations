@@ -251,13 +251,19 @@ export const getHomepage = createServerFn({ method: "GET" })
 
     const [stickyRes, latestRes, catsRes] = await Promise.all([
       wpFetch(`/posts?${stickyParams.toString()}`).catch(() => null),
-      wpFetch(`/posts?${latestParams.toString()}`),
-      wpFetch(`/categories?${catParams.toString()}`),
+      wpFetch(`/posts?${latestParams.toString()}`).catch(() => null),
+      wpFetch(`/categories?${catParams.toString()}`).catch(() => null),
     ]);
 
-    const stickyRaw = stickyRes ? (JSON.parse(stickyRes.body) as WPPostRaw[]) : [];
-    const latestRaw = JSON.parse(latestRes.body) as WPPostRaw[];
-    const catsRaw = JSON.parse(catsRes.body) as WPTerm[];
+    // Upstream WordPress can be temporarily unavailable; render an empty
+    // homepage rather than crashing the whole route with a 500.
+    const safeParse = <T,>(body: string | undefined, fallback: T): T => {
+      if (!body) return fallback;
+      try { return JSON.parse(body) as T; } catch { return fallback; }
+    };
+    const stickyRaw = safeParse<WPPostRaw[]>(stickyRes?.body, []);
+    const latestRaw = safeParse<WPPostRaw[]>(latestRes?.body, []);
+    const catsRaw = safeParse<WPTerm[]>(catsRes?.body, []);
 
     const categories: Category[] = catsRaw.map((t) => ({
       id: t.id,
@@ -291,6 +297,6 @@ export const getHomepage = createServerFn({ method: "GET" })
       latest: latestRaw.map(normalizePost),
       categories,
       sections: sectionResults.filter((s) => s.articles.length > 0),
-      totalArticles: Number(latestRes.res.headers.get("x-wp-total") ?? latestRaw.length),
+      totalArticles: Number(latestRes?.res.headers.get("x-wp-total") ?? latestRaw.length),
     };
   });
