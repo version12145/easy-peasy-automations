@@ -223,15 +223,6 @@
 @utility animate-logo-float {
   animation: logo-float 5.5s ease-in-out infinite;
 }
-@utility animate-logo-glow {
-  animation: logo-glow 4s ease-in-out infinite;
-}
-@utility animate-spin-slow {
-  animation: spin-slow 28s linear infinite;
-}
-@utility animate-spin-reverse-slow {
-  animation: spin-reverse-slow 36s linear infinite;
-}
 @utility hover-lift {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
   &:hover {
