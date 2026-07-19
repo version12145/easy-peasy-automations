@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Menu, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import logo from "@/assets/veducate-mark.png.asset.json";
 
 const NAV = [
   { to: "/articles", label: "Articles" },
