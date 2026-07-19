@@ -210,16 +210,6 @@
   0%, 100% { transform: translateY(0) scale(1); }
   50%      { transform: translateY(-10px) scale(1.03); }
 }
-@keyframes logo-glow {
-  0%, 100% { opacity: 0.45; transform: scale(1); }
-  50%      { opacity: 0.9;  transform: scale(1.18); }
-}
-@keyframes spin-slow {
-  to { transform: rotate(360deg); }
-}
-@keyframes spin-reverse-slow {
-  to { transform: rotate(-360deg); }
-}
 
 @utility animate-fade-up {
   animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -232,15 +222,6 @@
 }
 @utility animate-logo-float {
   animation: logo-float 5.5s ease-in-out infinite;
-}
-@utility animate-logo-glow {
-  animation: logo-glow 4s ease-in-out infinite;
-}
-@utility animate-spin-slow {
-  animation: spin-slow 28s linear infinite;
-}
-@utility animate-spin-reverse-slow {
-  animation: spin-reverse-slow 36s linear infinite;
 }
 @utility hover-lift {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
