@@ -105,7 +105,7 @@ function SearchPage() {
   useEffect(() => {
     if (debounced === search.q) return;
     navigate({
-      search: (prev) => ({ ...prev, q: debounced, page: 1 }),
+      search: (prev: SearchParams) => ({ ...prev, q: debounced, page: 1 }),
       replace: true,
     });
   }, [debounced, search.q, navigate]);
