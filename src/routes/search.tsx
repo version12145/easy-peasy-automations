@@ -181,9 +181,9 @@ function SearchPage() {
     staleTime: 30_000,
   });
 
-  const setSort = (sort: string) => navigate({ search: (p) => ({ ...p, sort, page: 1 }), replace: true });
-  const setCat = (slug: string) => navigate({ search: (p) => ({ ...p, cat: slug, page: 1 }), replace: true });
-  const setPage = (page: number) => navigate({ search: (p) => ({ ...p, page }) });
+  const setSort = (sort: string) => navigate({ search: (p: SearchParams) => ({ ...p, sort, page: 1 }), replace: true });
+  const setCat = (slug: string) => navigate({ search: (p: SearchParams) => ({ ...p, cat: slug, page: 1 }), replace: true });
+  const setPage = (page: number) => navigate({ search: (p: SearchParams) => ({ ...p, page }) });
 
   const clearRecents = useCallback(() => {
     setRecents([]);
