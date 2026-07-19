@@ -69,7 +69,7 @@ function Home() {
   const pillarSlugs = new Set(pillarCategories.map((c) => c.slug));
   const pillarSections = home.sections
     .filter((s) => pillarSlugs.has(s.category.slug))
-    .sort((a, b) => filterAndOrderPillarCategories([a.category, b.category]).findIndex((c) => c.slug === a.category.slug) === 0 ? -1 : 1);
+    .sort((a, b) => pillarOrder(a.category.slug) - pillarOrder(b.category.slug));
 
   // WordPress sticky posts drive "Featured". Fallback to newest post so the slot never sits empty.
   const feature: Article | undefined = home.featured[0] ?? home.latest[0];
