@@ -138,8 +138,17 @@
     border-color: var(--color-border);
   }
 
+  html {
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  code, pre, kbd {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
   }
 }
