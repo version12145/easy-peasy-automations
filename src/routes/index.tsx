@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { getHomepage, type HomeSection } from "@/lib/wordpress.functions";
 import { formatDate, type Article, type Category } from "@/lib/wordpress";
+import { filterAndOrderPillarCategories, pillarOrder } from "@/lib/taxonomy";
 import { ArticleCard } from "@/components/article-card";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
@@ -63,12 +64,19 @@ function tintFor(slug: string) {
 function Home() {
   const { data: home } = useSuspenseQuery(homeQO);
 
+  // Enforce fixed content pillars — hide any WP category that isn't in the taxonomy.
+  const pillarCategories = filterAndOrderPillarCategories(home.categories);
+  const pillarSlugs = new Set(pillarCategories.map((c) => c.slug));
+  const pillarSections = home.sections
+    .filter((s) => pillarSlugs.has(s.category.slug))
+    .sort((a, b) => pillarOrder(a.category.slug) - pillarOrder(b.category.slug));
+
   // WordPress sticky posts drive "Featured". Fallback to newest post so the slot never sits empty.
   const feature: Article | undefined = home.featured[0] ?? home.latest[0];
   const latestGrid = home.latest
     .filter((a) => a.id !== feature?.id)
     .slice(0, 6);
-  const trending = home.categories.slice(0, 8);
+  const trending = pillarCategories.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -114,7 +122,7 @@ function Home() {
               {/* Stats — live from WordPress */}
               <div className="mt-12 grid grid-cols-3 gap-3 sm:gap-4">
                 {[
-                  { k: `${home.categories.length}+`, v: "Knowledge Domains" },
+                  { k: `${pillarCategories.length}`, v: "Content Pillars" },
                   { k: `${home.totalArticles}+`, v: "Published Articles" },
                   { k: `${home.featured.length + home.latest.length}+`, v: "Fresh This Week" },
                 ].map((s) => (
@@ -267,8 +275,8 @@ function Home() {
         </section>
       ) : null}
 
-      {/* DYNAMIC CATEGORY SECTIONS — one per WordPress category */}
-      {home.sections.map((section: HomeSection, idx) => (
+      {/* CATEGORY SECTIONS — one per fixed content pillar, ordered by taxonomy */}
+      {pillarSections.map((section: HomeSection, idx) => (
         <CategoryStrip key={section.category.id} section={section} index={idx} />
       ))}
 

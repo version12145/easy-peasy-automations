@@ -20,13 +20,14 @@ async function wpFetch(path: string): Promise<{ res: Response; body: string }> {
 }
 
 export const listArticles = createServerFn({ method: "GET" })
-  .inputValidator((d: { page?: number; perPage?: number; categoryId?: number; sticky?: boolean; search?: string; orderby?: "date" | "relevance" | "title"; order?: "asc" | "desc" } = {}) => d)
+  .inputValidator((d: { page?: number; perPage?: number; categoryId?: number; tagId?: number; sticky?: boolean; search?: string; orderby?: "date" | "relevance" | "title"; order?: "asc" | "desc" } = {}) => d)
   .handler(async ({ data }): Promise<{ articles: Article[]; total: number; totalPages: number }> => {
     const params = new URLSearchParams();
     params.set("_embed", "1");
     params.set("per_page", String(Math.min(data.perPage ?? 12, 50)));
     params.set("page", String(data.page ?? 1));
     if (data.categoryId) params.set("categories", String(data.categoryId));
+    if (data.tagId) params.set("tags", String(data.tagId));
     if (data.search) params.set("search", data.search);
     if (data.sticky) params.set("sticky", "true");
     if (data.orderby) params.set("orderby", data.orderby);
@@ -37,6 +38,46 @@ export const listArticles = createServerFn({ method: "GET" })
       articles: raw.map(normalizePost),
       total: Number(res.headers.get("x-wp-total") ?? raw.length),
       totalPages: Number(res.headers.get("x-wp-totalpages") ?? 1),
+    };
+  });
+
+export type Tag = { id: number; name: string; slug: string; description: string; count: number };
+
+export const listTags = createServerFn({ method: "GET" })
+  .inputValidator((d: { perPage?: number; hideEmpty?: boolean; orderby?: "count" | "name" | "id" | "slug"; order?: "asc" | "desc"; search?: string } = {}) => d)
+  .handler(async ({ data }): Promise<Tag[]> => {
+    const params = new URLSearchParams({
+      per_page: String(Math.min(data.perPage ?? 50, 100)),
+      hide_empty: String(data.hideEmpty ?? true),
+      orderby: data.orderby ?? "count",
+      order: data.order ?? "desc",
+    });
+    if (data.search) params.set("search", data.search);
+    const { body } = await wpFetch(`/tags?${params.toString()}`);
+    const raw = JSON.parse(body) as WPTerm[];
+    return raw.map((t) => ({
+      id: t.id,
+      name: decodeEntities(t.name),
+      slug: t.slug,
+      description: decodeEntities(t.description ?? ""),
+      count: t.count ?? 0,
+    }));
+  });
+
+export const getTagBySlug = createServerFn({ method: "GET" })
+  .inputValidator((d: { slug: string }) => d)
+  .handler(async ({ data }): Promise<Tag | null> => {
+    const params = new URLSearchParams({ slug: data.slug });
+    const { body } = await wpFetch(`/tags?${params.toString()}`);
+    const raw = JSON.parse(body) as WPTerm[];
+    if (!raw.length) return null;
+    const t = raw[0];
+    return {
+      id: t.id,
+      name: decodeEntities(t.name),
+      slug: t.slug,
+      description: decodeEntities(t.description ?? ""),
+      count: t.count ?? 0,
     };
   });
 

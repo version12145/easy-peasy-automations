@@ -185,12 +185,20 @@ function ArticlePage() {
             />
 
             {article.tags.length ? (
-              <div className="mt-12 flex flex-wrap gap-2">
-                {article.tags.map((t: { id: number; name: string }) => (
-                  <span key={t.id} className="rounded-full border border-border bg-surface-2 px-3 py-1 text-xs text-muted-foreground">
-                    #{t.name}
-                  </span>
-                ))}
+              <div className="mt-12">
+                <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Tagged</div>
+                <div className="flex flex-wrap gap-2">
+                  {article.tags.map((t: { id: number; name: string; slug: string }) => (
+                    <Link
+                      key={t.id}
+                      to="/tag/$slug"
+                      params={{ slug: t.slug }}
+                      className="rounded-full border border-border bg-surface-2 px-3 py-1 text-xs font-medium text-muted-foreground hover:border-blue hover:text-navy hover:bg-blue-soft/60 transition-colors"
+                    >
+                      #{t.name}
+                    </Link>
+                  ))}
+                </div>
               </div>
             ) : null}
 
