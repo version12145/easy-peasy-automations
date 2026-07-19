@@ -75,8 +75,8 @@ function Home() {
   const { data: categories } = useSuspenseQuery(categoriesQO);
 
   const feature = latest.articles[0];
-  const latestGrid = latest.articles.slice(2, 8);
-  const editorPicks = latest.articles.slice(8, 12);
+  const latestGrid = latest.articles.slice(1, 7);
+  const editorPicks = latest.articles.slice(7, 11);
   const trending = categories.slice(0, 8);
 
   return (
