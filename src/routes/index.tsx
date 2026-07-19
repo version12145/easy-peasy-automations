@@ -366,9 +366,9 @@ function Home() {
       {/* LEARNING COLLECTIONS */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
         <div className="mb-10">
-          <div className="text-xs font-semibold uppercase tracking-widest text-blue">Learn</div>
-          <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Learning collections</h2>
-          <p className="mt-3 max-w-2xl text-muted-foreground">Guided journeys through the topics that matter — structured, sequenced, and paced for real progress.</p>
+          <div className="text-xs font-semibold uppercase tracking-widest text-blue">Structured Journeys</div>
+          <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Learning Collections</h2>
+          <p className="mt-3 max-w-2xl text-muted-foreground">Structured learning journeys carefully organized by VEducate Academy to help you master new technologies from beginner to advanced levels.</p>
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
