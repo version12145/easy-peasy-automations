@@ -4,38 +4,44 @@ import logo from "@/assets/veducate-mark.png.asset.json";
 
 const COLS = [
   {
-    heading: "Company",
-    links: [
-      { label: "About", to: "/" },
-      { label: "Editorial standards", to: "/" },
-      { label: "Contact", to: "/" },
-      { label: "Careers", to: "/" },
-    ],
-  },
-  {
-    heading: "Resources",
+    heading: "Knowledge",
     links: [
       { label: "Articles", to: "/articles" },
-      { label: "Collections", to: "/articles" },
-      { label: "Search", to: "/search" },
-      { label: "RSS", to: "/" },
+      { label: "Latest Updates", to: "/articles" },
+      { label: "Trending Topics", to: "/categories" },
+      { label: "Editor's Picks", to: "/articles" },
+      { label: "Learning Collections", to: "/articles" },
     ],
   },
   {
     heading: "Categories",
     links: [
       { label: "Artificial Intelligence", to: "/categories" },
-      { label: "Cloud Engineering", to: "/categories" },
-      { label: "Cyber Security", to: "/categories" },
-      { label: "Career", to: "/categories" },
+      { label: "Programming", to: "/categories" },
+      { label: "Cloud Computing", to: "/categories" },
+      { label: "Cybersecurity", to: "/categories" },
+      { label: "Engineering", to: "/categories" },
+      { label: "Career Development", to: "/categories" },
     ],
   },
   {
-    heading: "Legal",
+    heading: "Company",
     links: [
-      { label: "Privacy", to: "/" },
-      { label: "Terms", to: "/" },
-      { label: "Cookie policy", to: "/" },
+      { label: "About", to: "/" },
+      { label: "Contact", to: "/" },
+      { label: "Privacy Policy", to: "/" },
+      { label: "Terms of Service", to: "/" },
+      { label: "Careers", to: "/" },
+    ],
+  },
+  {
+    heading: "Resources",
+    links: [
+      { label: "Knowledge Hub", to: "/articles" },
+      { label: "Learning Platform", to: "/articles" },
+      { label: "Documentation", to: "/" },
+      { label: "Community", to: "/" },
+      { label: "Support", to: "/" },
     ],
   },
 ] as const;
