@@ -3,9 +3,9 @@ import heroLogo from "@/assets/veducate-hero-logo.png.asset.json";
 
 export function HeroLogo() {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0, mx: 50, my: 50, active: false });
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0, active: false });
   const raf = useRef<number | null>(null);
-  const target = useRef({ rx: 0, ry: 0, mx: 50, my: 50, active: false });
+  const target = useRef({ rx: 0, ry: 0, active: false });
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -18,13 +18,11 @@ export function HeroLogo() {
       target.current = {
         rx: (0.5 - y) * 18,
         ry: (x - 0.5) * 22,
-        mx: x * 100,
-        my: y * 100,
         active: true,
       };
     };
     const onLeave = () => {
-      target.current = { rx: 0, ry: 0, mx: 50, my: 50, active: false };
+      target.current = { rx: 0, ry: 0, active: false };
     };
 
     el.addEventListener("mousemove", onMove);
@@ -37,8 +35,6 @@ export function HeroLogo() {
         return {
           rx: prev.rx + (t.rx - prev.rx) * k,
           ry: prev.ry + (t.ry - prev.ry) * k,
-          mx: prev.mx + (t.mx - prev.mx) * k,
-          my: prev.my + (t.my - prev.my) * k,
           active: t.active,
         };
       });
@@ -53,7 +49,7 @@ export function HeroLogo() {
     };
   }, []);
 
-  const { rx, ry, mx, my, active } = tilt;
+  const { rx, ry, active } = tilt;
 
   return (
     <div
