@@ -17,7 +17,7 @@ export function ArticleCard({ article, size = "md", index = 0 }: { article: Arti
     <Link
       to="/articles/$slug"
       params={{ slug: article.slug }}
-      className="group block animate-fade-up"
+      className="group block h-full animate-fade-up"
       style={{ animationDelay: `${index * 60}ms` }}
     >
       <article className="glass hover-lift flex h-full flex-col overflow-hidden rounded-3xl">
