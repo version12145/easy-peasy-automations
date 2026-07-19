@@ -1,15 +1,27 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles, Clock, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  Brain,
+  Briefcase,
+  Cloud,
+  Clock,
+  Code2,
+  Shield,
+  Sparkles,
+  TrendingUp,
+} from "lucide-react";
 import { listArticles, listCategories } from "@/lib/wordpress.functions";
-import { formatDate } from "@/lib/wordpress";
+import { formatDate, type Category } from "@/lib/wordpress";
 import { ArticleCard } from "@/components/article-card";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 
 const latestQO = queryOptions({
   queryKey: ["articles", "home"],
-  queryFn: () => listArticles({ data: { perPage: 9, page: 1 } }),
+  queryFn: () => listArticles({ data: { perPage: 13, page: 1 } }),
 });
 const categoriesQO = queryOptions({
   queryKey: ["categories"],
@@ -19,16 +31,16 @@ const categoriesQO = queryOptions({
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "VEducate Academy — Empowering Learning with AI" },
+      { title: "VEducate Academy — A premium knowledge hub for AI, cloud & engineering" },
       {
         name: "description",
         content:
-          "The official knowledge hub of VEducate Academy — expert tutorials, engineering insights, AI research, cloud, cybersecurity, and career guidance.",
+          "Editorial articles, deep guides and learning collections on artificial intelligence, cloud engineering, cyber security and career craft.",
       },
       { property: "og:title", content: "VEducate Academy — Knowledge Hub" },
       {
         property: "og:description",
-        content: "Empowering Learning with AI, Technology & Innovation.",
+        content: "Editorial guides on AI, cloud, security and engineering craft.",
       },
       { property: "og:type", content: "website" },
     ],
@@ -42,208 +54,434 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+const COLLECTIONS = [
+  { icon: Brain, title: "Artificial Intelligence", count: 42, hours: 18, tint: "from-blue-500/10 to-indigo-500/10" },
+  { icon: Cloud, title: "Cloud Engineering", count: 36, hours: 24, tint: "from-sky-500/10 to-cyan-500/10" },
+  { icon: Code2, title: "Python Roadmap", count: 28, hours: 16, tint: "from-emerald-500/10 to-teal-500/10" },
+  { icon: Shield, title: "Cyber Security", count: 31, hours: 20, tint: "from-rose-500/10 to-orange-500/10" },
+  { icon: Briefcase, title: "Career Preparation", count: 24, hours: 12, tint: "from-amber-500/10 to-yellow-500/10" },
+  { icon: BookOpen, title: "Engineering Craft", count: 19, hours: 10, tint: "from-violet-500/10 to-fuchsia-500/10" },
+];
+
+const CAT_ICONS = [Brain, Cloud, Code2, Shield, Briefcase, BookOpen, Sparkles, TrendingUp];
+
 function Home() {
   const { data: latest } = useSuspenseQuery(latestQO);
   const { data: categories } = useSuspenseQuery(categoriesQO);
 
   const feature = latest.articles[0];
-  const rest = latest.articles.slice(1);
-  const topics = categories.slice(0, 8);
+  const heroSecondary = latest.articles[1];
+  const latestGrid = latest.articles.slice(2, 8);
+  const editorPicks = latest.articles.slice(8, 12);
+  const trending = categories.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteNav />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden">
+      {/* HERO */}
+      <section className="relative hero-gradient overflow-hidden pt-28 sm:pt-36 pb-16 sm:pb-24">
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-primary/15 blur-3xl" />
-          <div className="absolute right-0 top-40 h-72 w-72 rounded-full bg-accent-foreground/5 blur-3xl" />
+          <div className="absolute -top-24 left-1/3 h-96 w-96 rounded-full bg-blue/10 blur-3xl animate-float" />
+          <div className="absolute right-10 top-40 h-72 w-72 rounded-full bg-navy/10 blur-3xl" />
         </div>
-        <div className="mx-auto max-w-7xl px-4 pb-16 pt-20 sm:px-6 lg:px-8 lg:pt-28">
-          <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
-            <div className="lg:col-span-7">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-                <Sparkles className="h-3 w-3 text-primary" />
-                VEducate Academy Knowledge Hub
+
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
+            {/* Left */}
+            <div className="lg:col-span-6 animate-fade-up">
+              <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1.5 text-xs font-medium text-navy">
+                <Sparkles className="h-3.5 w-3.5" />
+                A premium knowledge platform · Est. 2024
               </div>
-              <h1 className="mt-6 text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                Empowering Learning with{" "}
-                <span className="bg-gradient-to-r from-primary via-primary/80 to-foreground bg-clip-text text-transparent">
-                  AI, Technology &amp; Innovation
-                </span>
+              <h1 className="mt-6 text-editorial text-5xl sm:text-6xl lg:text-7xl text-foreground">
+                Learning, engineered for the{" "}
+                <em className="italic grad-text">next decade.</em>
               </h1>
-              <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-                A knowledge platform delivering expert tutorials, engineering insights,
-                AI research, cloud technologies, programming resources, cybersecurity
-                updates, career guidance and educational innovation.
+              <p className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed text-muted-foreground">
+                Editorial guides, research, and roadmaps from VEducate Academy — covering artificial intelligence, cloud, security and the craft of modern engineering.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link
                   to="/articles"
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
+                  className="group inline-flex items-center gap-2 rounded-full grad-navy px-6 py-3 text-sm font-semibold text-white shadow-navy transition hover:opacity-95"
                 >
-                  Explore Articles <ArrowRight className="h-4 w-4" />
+                  Start reading
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
                 <Link
                   to="/categories"
-                  className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition hover:bg-accent"
+                  className="inline-flex items-center gap-2 rounded-full glass px-6 py-3 text-sm font-semibold text-foreground hover:bg-secondary"
                 >
-                  Browse Categories
+                  Browse categories
                 </Link>
               </div>
 
-              {topics.length > 0 && (
-                <div className="mt-10">
-                  <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                    <TrendingUp className="h-3 w-3" /> Trending topics
+              {/* Stats */}
+              <div className="mt-12 grid grid-cols-3 gap-3 sm:gap-4">
+                {[
+                  { k: "10,000+", v: "Students" },
+                  { k: `${latest.total}+`, v: "Articles" },
+                  { k: "25+", v: "Collections" },
+                ].map((s) => (
+                  <div key={s.v} className="glass rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
+                    <div className="text-xl sm:text-2xl font-bold tracking-tight grad-text">{s.k}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">{s.v}</div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {topics.map((c) => (
-                      <Link
-                        key={c.id}
-                        to="/category/$slug"
-                        params={{ slug: c.slug }}
-                        className="rounded-full border border-border/60 bg-background/60 px-3 py-1.5 text-xs font-medium text-foreground/80 backdrop-blur transition hover:border-primary/50 hover:text-primary"
-                      >
-                        {c.name}
-                      </Link>
-                    ))}
+                ))}
+              </div>
+            </div>
+
+            {/* Right — floating featured card */}
+            {heroSecondary ? (
+              <div className="lg:col-span-6 animate-fade-up" style={{ animationDelay: "120ms" }}>
+                <div className="relative">
+                  <div className="pointer-events-none absolute -inset-4 -z-10 rounded-[2rem] grad-navy opacity-10 blur-2xl" />
+                  <Link
+                    to="/articles/$slug"
+                    params={{ slug: heroSecondary.slug }}
+                    className="group block glass-strong hover-lift overflow-hidden rounded-3xl"
+                  >
+                    <div className="relative aspect-[5/4] w-full overflow-hidden bg-surface-2">
+                      {heroSecondary.image ? (
+                        <img
+                          src={heroSecondary.image}
+                          alt={heroSecondary.imageAlt}
+                          className="h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="h-full w-full grad-navy" />
+                      )}
+                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/70 to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+                        {heroSecondary.category ? (
+                          <span className="inline-flex items-center rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-semibold backdrop-blur-md">
+                            {heroSecondary.category.name}
+                          </span>
+                        ) : null}
+                        <h3 className="mt-3 text-xl sm:text-2xl font-bold leading-tight tracking-tight">
+                          {heroSecondary.title}
+                        </h3>
+                        <div className="mt-3 flex items-center gap-2 text-xs opacity-90">
+                          <span>{heroSecondary.author?.name ?? "VEducate"}</span>
+                          <span>·</span>
+                          <Clock className="h-3 w-3" /> {heroSecondary.readingTime} min
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  {/* Floating badge */}
+                  <div className="absolute -left-3 top-6 hidden sm:block animate-float">
+                    <div className="glass-strong flex items-center gap-2 rounded-full px-3 py-2 text-xs font-medium">
+                      <TrendingUp className="h-3.5 w-3.5 text-blue" />
+                      Trending this week
+                    </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </section>
 
-            {feature && (
-              <div className="lg:col-span-5">
-                <Link
-                  to="/articles/$slug"
-                  params={{ slug: feature.slug }}
-                  className="group relative block overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm transition hover:shadow-xl"
-                >
-                  {feature.image && (
-                    <div className="aspect-[4/3] w-full overflow-hidden bg-muted">
-                      <img
-                        src={feature.image}
-                        alt={feature.imageAlt}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
+      {/* TRENDING TOPICS */}
+      {trending.length > 0 ? (
+        <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-10">
+          <div className="glass rounded-3xl p-4 sm:p-5">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+              <div className="flex min-w-0 items-center gap-3 overflow-x-auto scrollbar-none">
+                <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                  Trending
+                </span>
+                <div className="mx-1 hidden sm:block h-5 w-px shrink-0 bg-border" />
+                <div className="flex items-center gap-2">
+                  {trending.map((c) => (
+                    <Link
+                      key={c.id}
+                      to="/category/$slug"
+                      params={{ slug: c.slug }}
+                      className="shrink-0 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-foreground/80 hover:border-blue hover:text-navy transition-colors"
+                    >
+                      {c.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <Link to="/categories" className="shrink-0 text-xs font-semibold text-navy hover:underline">
+                See all →
+              </Link>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* FEATURED STORY — magazine hero */}
+      {feature ? (
+        <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-widest text-blue">The Feature</div>
+              <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">This week's read</h2>
+            </div>
+          </div>
+
+          <Link
+            to="/articles/$slug"
+            params={{ slug: feature.slug }}
+            className="group block overflow-hidden rounded-3xl glass-strong hover-lift"
+          >
+            <div className="grid lg:grid-cols-2">
+              <div className="relative aspect-[4/3] lg:aspect-auto overflow-hidden bg-surface-2">
+                {feature.image ? (
+                  <img
+                    src={feature.image}
+                    alt={feature.imageAlt}
+                    className="h-full w-full object-cover transition-transform duration-[1400ms] group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="h-full w-full grad-navy" />
+                )}
+                <div className="pointer-events-none absolute inset-0 bg-linear-to-tr from-navy/40 via-transparent to-transparent" />
+              </div>
+              <div className="flex flex-col justify-center p-8 sm:p-12">
+                {feature.category ? (
+                  <span className="inline-flex w-fit items-center rounded-full bg-blue-soft px-3 py-1 text-xs font-semibold text-navy">
+                    Featured · {feature.category.name}
+                  </span>
+                ) : null}
+                <h3 className="mt-5 text-editorial text-3xl sm:text-4xl lg:text-5xl text-foreground">
+                  {feature.title}
+                </h3>
+                {feature.excerpt ? (
+                  <p className="mt-5 text-base sm:text-lg leading-relaxed text-muted-foreground line-clamp-3">
+                    {feature.excerpt}
+                  </p>
+                ) : null}
+                <div className="mt-7 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                  {feature.author?.avatar ? (
+                    <img src={feature.author.avatar} alt="" className="h-8 w-8 shrink-0 rounded-full ring-1 ring-border" />
+                  ) : (
+                    <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full grad-navy text-[11px] font-bold text-white">
+                      {feature.author?.name?.[0] ?? "V"}
                     </div>
                   )}
-                  <div className="p-6">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
-                      Featured · {feature.category?.name ?? "Article"}
-                    </div>
-                    <h3 className="mt-2 text-2xl font-semibold leading-tight tracking-tight text-foreground group-hover:text-primary">
-                      {feature.title}
-                    </h3>
-                    <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">
-                      {feature.excerpt}
-                    </p>
-                    <div className="mt-5 flex items-center gap-3 text-xs text-muted-foreground">
-                      <span>{feature.author?.name ?? "VEducate"}</span>
-                      <span>·</span>
-                      <span>{formatDate(feature.date)}</span>
-                      <span>·</span>
-                      <span className="inline-flex items-center gap-1">
-                        <Clock className="h-3 w-3" /> {feature.readingTime} min
+                  <span className="font-semibold text-foreground">{feature.author?.name ?? "VEducate"}</span>
+                  <span>·</span>
+                  <span>{formatDate(feature.date)}</span>
+                  <span>·</span>
+                  <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {feature.readingTime} min read</span>
+                </div>
+                <div className="mt-8">
+                  <span className="inline-flex items-center gap-2 rounded-full grad-navy px-5 py-2.5 text-sm font-semibold text-white shadow-navy transition group-hover:opacity-95">
+                    Read article <ArrowUpRight className="h-4 w-4" />
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </section>
+      ) : null}
+
+      {/* LATEST — magazine layout */}
+      {latestGrid.length > 0 ? (
+        <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Latest</div>
+              <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Fresh from the hub</h2>
+            </div>
+            <Link to="/articles" className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-navy hover:gap-2 transition-all">
+              View all <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-6">
+            {latestGrid.map((a, i) => {
+              // First is large (spans 4 cols on desktop), then 2-2-1-1
+              const span =
+                i === 0 ? "lg:col-span-4 lg:row-span-2" :
+                i === 1 || i === 2 ? "lg:col-span-2" :
+                "lg:col-span-2";
+              const size = i === 0 ? "lg" : "md";
+              return (
+                <div key={a.id} className={span}>
+                  <ArticleCard article={a} size={size} index={i} />
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      {/* BROWSE CATEGORIES */}
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
+        <div className="mb-10 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
+          <div className="min-w-0">
+            <div className="text-xs font-semibold uppercase tracking-widest text-blue">Browse</div>
+            <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Categories</h2>
+            <p className="mt-3 max-w-xl text-muted-foreground">Deep dives grouped by discipline — pick a track and go.</p>
+          </div>
+          <Link to="/categories" className="shrink-0 text-sm font-semibold text-navy hover:underline">All →</Link>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.slice(0, 6).map((c: Category, i) => {
+            const Icon = CAT_ICONS[i % CAT_ICONS.length];
+            return (
+              <Link
+                key={c.id}
+                to="/category/$slug"
+                params={{ slug: c.slug }}
+                className="group relative overflow-hidden rounded-3xl glass hover-lift p-6 sm:p-7 animate-fade-up"
+                style={{ animationDelay: `${i * 50}ms` }}
+              >
+                <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-blue/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="grid h-12 w-12 place-items-center rounded-2xl grad-navy text-white">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h3 className="mt-5 text-xl font-bold tracking-tight text-foreground group-hover:text-navy">{c.name}</h3>
+                {c.description ? (
+                  <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{c.description}</p>
+                ) : (
+                  <p className="mt-2 text-sm text-muted-foreground">Curated articles and roadmaps.</p>
+                )}
+                <div className="mt-6 flex items-center justify-between">
+                  <span className="text-xs font-medium text-muted-foreground">{c.count} articles</span>
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-navy transition-transform group-hover:translate-x-0.5">
+                    Explore <ArrowRight className="h-4 w-4" />
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* LEARNING COLLECTIONS */}
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
+        <div className="mb-10">
+          <div className="text-xs font-semibold uppercase tracking-widest text-blue">Learn</div>
+          <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Learning collections</h2>
+          <p className="mt-3 max-w-2xl text-muted-foreground">Guided journeys through the topics that matter — structured, sequenced, and paced for real progress.</p>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {COLLECTIONS.map((col, i) => {
+            const Icon = col.icon;
+            return (
+              <div
+                key={col.title}
+                className={`group relative overflow-hidden rounded-3xl glass hover-lift p-6 sm:p-7 animate-fade-up`}
+                style={{ animationDelay: `${i * 50}ms` }}
+              >
+                <div className={`pointer-events-none absolute inset-0 bg-linear-to-br ${col.tint} opacity-60`} />
+                <div className="relative">
+                  <div className="grid h-12 w-12 place-items-center rounded-2xl bg-white/70 text-navy backdrop-blur-md ring-1 ring-white">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-5 text-xl font-bold tracking-tight text-foreground">{col.title}</h3>
+                  <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1"><BookOpen className="h-3.5 w-3.5" /> {col.count} articles</span>
+                    <span>·</span>
+                    <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {col.hours}h to complete</span>
+                  </div>
+                  <button className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-navy transition-transform group-hover:translate-x-0.5">
+                    Continue learning <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* EDITOR'S PICKS — horizontal magazine cards */}
+      {editorPicks.length > 0 ? (
+        <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
+          <div className="mb-10">
+            <div className="text-xs font-semibold uppercase tracking-widest text-blue">Editor's picks</div>
+            <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Handpicked reads</h2>
+          </div>
+
+          <div className="space-y-5">
+            {editorPicks.map((a, i) => (
+              <Link
+                key={a.id}
+                to="/articles/$slug"
+                params={{ slug: a.slug }}
+                className="group block overflow-hidden rounded-3xl glass hover-lift animate-fade-up"
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
+                <div className="grid gap-0 sm:grid-cols-[280px_1fr] lg:grid-cols-[360px_1fr]">
+                  <div className="relative aspect-[4/3] sm:aspect-auto overflow-hidden bg-surface-2">
+                    {a.image ? (
+                      <img src={a.image} alt={a.imageAlt} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    ) : (
+                      <div className="h-full w-full grad-navy" />
+                    )}
+                  </div>
+                  <div className="flex flex-col justify-center p-6 sm:p-8">
+                    {a.category ? (
+                      <span className="inline-flex w-fit items-center rounded-full bg-blue-soft px-2.5 py-1 text-[11px] font-semibold text-navy">
+                        {a.category.name}
                       </span>
+                    ) : null}
+                    <h3 className="mt-4 text-2xl font-bold leading-tight tracking-tight text-foreground group-hover:text-navy">
+                      {a.title}
+                    </h3>
+                    {a.excerpt ? (
+                      <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{a.excerpt}</p>
+                    ) : null}
+                    <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
+                      <span className="font-semibold text-foreground">{a.author?.name ?? "VEducate"}</span>
+                      <span>·</span>
+                      <span>{formatDate(a.date)}</span>
+                      <span>·</span>
+                      <Clock className="h-3.5 w-3.5" /> {a.readingTime} min
                     </div>
                   </div>
-                </Link>
-              </div>
-            )}
+                </div>
+              </Link>
+            ))}
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
-      {/* Latest */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mb-8 flex items-end justify-between">
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Latest
+      {/* NEWSLETTER */}
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
+        <div className="relative overflow-hidden rounded-3xl grad-navy p-8 sm:p-14 text-white shadow-navy">
+          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
+          <div className="pointer-events-none absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-blue/30 blur-3xl" />
+          <div className="relative grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur-md">
+                <Sparkles className="h-3.5 w-3.5" /> The Weekly Signal
+              </div>
+              <h2 className="mt-4 text-editorial text-4xl sm:text-5xl text-white">
+                One curated read.<br /><em className="italic text-blue-soft/90">Every Sunday.</em>
+              </h2>
+              <p className="mt-4 max-w-xl text-white/70">
+                Zero noise. Just the single best piece from the hub — plus one carefully chosen link from the wider internet.
+              </p>
             </div>
-            <h2 className="mt-1 text-3xl font-semibold tracking-tight">
-              Fresh from the hub
-            </h2>
-          </div>
-          <Link
-            to="/articles"
-            className="hidden text-sm font-medium text-primary hover:underline sm:inline-flex"
-          >
-            View all →
-          </Link>
-        </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {rest.map((a) => (
-            <ArticleCard key={a.id} article={a} />
-          ))}
-        </div>
-      </section>
-
-      {/* Categories */}
-      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <div className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            Categories
-          </div>
-          <h2 className="mt-1 text-3xl font-semibold tracking-tight">Browse by topic</h2>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.slice(0, 9).map((c) => (
-            <Link
-              key={c.id}
-              to="/category/$slug"
-              params={{ slug: c.slug }}
-              className="group rounded-2xl border border-border/60 bg-card p-6 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
-            >
-              <div className="flex items-start justify-between">
-                <h3 className="text-lg font-semibold tracking-tight group-hover:text-primary">
-                  {c.name}
-                </h3>
-                <span className="rounded-full bg-accent px-2 py-0.5 text-xs text-muted-foreground">
-                  {c.count}
-                </span>
-              </div>
-              {c.description && (
-                <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
-                  {c.description}
-                </p>
-              )}
-              <div className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-primary">
-                Explore <ArrowRight className="h-3 w-3" />
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Newsletter */}
-      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-gradient-to-br from-primary/10 via-background to-background p-10 md:p-14">
-          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
-          <div className="relative max-w-2xl">
-            <h2 className="text-3xl font-semibold tracking-tight">
-              Learn something new every week
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              Get the latest tutorials, AI research, and engineering insights from
-              VEducate Academy delivered to your inbox.
-            </p>
             <form
               onSubmit={(e) => e.preventDefault()}
-              className="mt-6 flex max-w-md flex-col gap-2 sm:flex-row"
+              className="glass-strong rounded-2xl p-4 sm:p-5 bg-white/10 border-white/20"
             >
-              <input
-                type="email"
-                required
-                placeholder="you@example.com"
-                className="h-11 flex-1 rounded-full border border-border bg-background px-4 text-sm outline-none focus:border-primary"
-              />
-              <button className="h-11 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition hover:opacity-90">
-                Subscribe
-              </button>
+              <label className="text-xs font-semibold uppercase tracking-widest text-white/70">Email</label>
+              <div className="mt-2 flex gap-2">
+                <input
+                  type="email"
+                  required
+                  placeholder="you@company.com"
+                  className="flex-1 min-w-0 rounded-full bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder:text-white/50 outline-none focus:ring-2 focus:ring-white/40"
+                />
+                <button className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-navy hover:bg-white/90">
+                  Subscribe
+                </button>
+              </div>
+              <p className="mt-3 text-[11px] text-white/60">Join 10,000+ engineers and students. Unsubscribe any time.</p>
             </form>
           </div>
         </div>

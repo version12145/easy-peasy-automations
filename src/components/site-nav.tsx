@@ -1,116 +1,110 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Menu, Moon, Search, Sun, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Search, Moon, Sun, Menu, X, Sparkles } from "lucide-react";
 
-const NAV_LINKS = [
+const NAV = [
   { to: "/articles", label: "Articles" },
   { to: "/categories", label: "Categories" },
-  { to: "/search", label: "Search" },
-];
+  { to: "/articles", label: "Collections", search: { collection: "all" } as const },
+  { to: "/articles", label: "Resources" },
+] as const;
 
 export function SiteNav() {
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [dark, setDark] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? window.localStorage.getItem("theme") : null;
+    const saved = typeof window !== "undefined" ? localStorage.getItem("ve-theme") : null;
     const prefers = typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initial = stored ? stored === "dark" : prefers;
-    setDark(initial);
-    document.documentElement.classList.toggle("dark", initial);
+    const isDark = saved ? saved === "dark" : prefers;
+    setDark(isDark);
+    document.documentElement.classList.toggle("dark", isDark);
   }, []);
 
   const toggleTheme = () => {
     const next = !dark;
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
-    window.localStorage.setItem("theme", next ? "dark" : "light");
+    localStorage.setItem("ve-theme", next ? "dark" : "light");
   };
 
   return (
-    <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        scrolled
-          ? "border-b border-border/60 bg-background/70 backdrop-blur-xl backdrop-saturate-150"
-          : "bg-background/40 backdrop-blur-md"
-      }`}
-    >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="group flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/60 text-primary-foreground shadow-sm ring-1 ring-inset ring-white/10">
-            <Sparkles className="h-4 w-4" />
-          </div>
-          <div className="leading-tight">
-            <div className="text-sm font-semibold tracking-tight">VEducate Academy</div>
-            <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              Knowledge Hub
-            </div>
-          </div>
+    <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:pt-5">
+      <nav
+        className={`pointer-events-auto glass-nav flex w-full max-w-6xl items-center gap-2 rounded-full px-3 py-2 transition-all duration-300 sm:gap-4 sm:px-5 sm:py-2.5 ${
+          scrolled ? "translate-y-0 scale-[0.99]" : ""
+        }`}
+      >
+        <Link to="/" className="flex items-center gap-2 pl-1 pr-1 sm:pr-2">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl grad-navy text-white font-black">V</span>
+          <span className="hidden text-sm font-bold tracking-tight text-foreground sm:inline">VEducate</span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {NAV_LINKS.map((l) => (
+        <div className="mx-2 hidden h-6 w-px bg-border sm:block" />
+
+        <div className="hidden flex-1 items-center gap-1 md:flex">
+          {NAV.map((n) => (
             <Link
-              key={l.to}
-              to={l.to}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              activeProps={{ className: "text-foreground bg-accent/60" }}
+              key={n.label}
+              to={n.to}
+              className="rounded-full px-3.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "!text-foreground !bg-secondary" }}
             >
-              {l.label}
+              {n.label}
             </Link>
           ))}
-        </nav>
+        </div>
 
-        <div className="flex items-center gap-2">
-          <Link
-            to="/search"
-            className="hidden h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/60 text-muted-foreground transition hover:text-foreground sm:inline-flex"
+        <div className="ml-auto flex items-center gap-1.5">
+          <button
+            onClick={() => navigate({ to: "/search" })}
             aria-label="Search"
+            className="grid h-9 w-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             <Search className="h-4 w-4" />
-          </Link>
+          </button>
           <button
             onClick={toggleTheme}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/60 text-muted-foreground transition hover:text-foreground"
             aria-label="Toggle theme"
+            className="grid h-9 w-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
           <button
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-background/60 text-muted-foreground transition hover:text-foreground md:hidden"
             aria-label="Menu"
+            className="grid h-9 w-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:hidden"
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
-      </div>
+      </nav>
 
-      {open && (
-        <div className="border-t border-border/60 bg-background/95 backdrop-blur md:hidden">
-          <nav className="mx-auto flex max-w-7xl flex-col gap-1 p-4">
-            {NAV_LINKS.map((l) => (
+      {open ? (
+        <div className="pointer-events-auto absolute top-16 left-3 right-3 md:hidden animate-fade-up">
+          <div className="glass-strong rounded-2xl p-3">
+            {NAV.map((n) => (
               <Link
-                key={l.to}
-                to={l.to}
+                key={n.label}
+                to={n.to}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
-                activeProps={{ className: "text-foreground bg-accent/60" }}
+                className="block rounded-xl px-4 py-3 text-sm font-medium text-foreground hover:bg-secondary"
               >
-                {l.label}
+                {n.label}
               </Link>
             ))}
-          </nav>
+          </div>
         </div>
-      )}
-    </header>
+      ) : null}
+    </div>
   );
 }
