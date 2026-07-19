@@ -1,16 +1,25 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, BookOpen, Brain, Briefcase, Cloud, Code2, Shield, Sparkles, TrendingUp } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { listCategories } from "@/lib/wordpress.functions";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
+import aiEducationImage from "@/assets/category-ai-education.png.asset.json";
+import edtechImage from "@/assets/category-edtech.png.asset.json";
+import educationImage from "@/assets/category-education.png.asset.json";
+import defaultImage from "@/assets/category-default.png.asset.json";
 
 const qo = queryOptions({
   queryKey: ["categories", "all"],
   queryFn: () => listCategories({ data: { perPage: 100 } }),
 });
 
-const ICONS = [Brain, Cloud, Code2, Shield, Briefcase, BookOpen, Sparkles, TrendingUp];
+const CATEGORY_IMAGES: Record<string, string> = {
+  "ai-in-education": aiEducationImage.url,
+  "edtech": edtechImage.url,
+  "education": educationImage.url,
+  "uncategorized": defaultImage.url,
+};
 
 export const Route = createFileRoute("/categories/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(qo),
@@ -47,34 +56,40 @@ function CategoriesPage() {
       </header>
 
       <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {data.map((c, i) => {
-            const Icon = ICONS[i % ICONS.length];
+            const imageUrl = CATEGORY_IMAGES[c.slug] ?? defaultImage.url;
             return (
               <Link
                 key={c.id}
                 to="/category/$slug"
                 params={{ slug: c.slug }}
-                className="group relative overflow-hidden rounded-3xl glass hover-lift p-6 sm:p-7 animate-fade-up"
+                className="group relative h-[420px] sm:h-[440px] overflow-hidden rounded-3xl border border-white/60 bg-white shadow-xl shadow-blue-900/5 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/10 animate-fade-up"
                 style={{ animationDelay: `${i * 40}ms` }}
               >
-                <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-blue/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <div className="grid grid-cols-[auto_1fr] items-start gap-4">
-                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl grad-navy text-white">
-                    <Icon className="h-5 w-5" />
+                <img
+                  src={imageUrl}
+                  alt={c.name}
+                  loading="lazy"
+                  width={400}
+                  height={600}
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/25 to-transparent" />
+
+                <div className="absolute bottom-3 left-3 right-3 p-5 sm:p-6 backdrop-blur-xl bg-white/20 border border-white/30 rounded-2xl">
+                  <span className="inline-flex px-2.5 py-1 rounded-full bg-white/30 text-white text-[10px] font-bold tracking-wider uppercase backdrop-blur-sm">
+                    {c.count} {c.count === 1 ? "article" : "articles"}
+                  </span>
+                  <h3 className="mt-3 text-xl font-semibold text-white tracking-tight">{c.name}</h3>
+                  {c.description ? (
+                    <p className="mt-2 line-clamp-2 text-sm text-white/80 leading-relaxed">{c.description}</p>
+                  ) : (
+                    <p className="mt-2 text-sm text-white/80 leading-relaxed">Curated articles and roadmaps for {c.name.toLowerCase()}.</p>
+                  )}
+                  <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-white transition-transform group-hover:translate-x-0.5">
+                    Explore <ArrowRight className="h-4 w-4" />
                   </div>
-                  <div className="min-w-0">
-                    <h3 className="truncate text-xl font-bold tracking-tight text-foreground group-hover:text-navy">{c.name}</h3>
-                    <div className="mt-1 text-xs text-muted-foreground">{c.count} articles</div>
-                  </div>
-                </div>
-                {c.description ? (
-                  <p className="mt-4 line-clamp-3 text-sm text-muted-foreground">{c.description}</p>
-                ) : (
-                  <p className="mt-4 text-sm text-muted-foreground">Curated articles and roadmaps for {c.name.toLowerCase()}.</p>
-                )}
-                <div className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-navy transition-transform group-hover:translate-x-0.5">
-                  Explore <ArrowRight className="h-4 w-4" />
                 </div>
               </Link>
             );
