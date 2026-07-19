@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { getHomepage, type HomeSection } from "@/lib/wordpress.functions";
 import { formatDate, type Article, type Category } from "@/lib/wordpress";
+import { filterAndOrderPillarCategories } from "@/lib/taxonomy";
 import { ArticleCard } from "@/components/article-card";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
