@@ -275,8 +275,8 @@ function Home() {
         </section>
       ) : null}
 
-      {/* DYNAMIC CATEGORY SECTIONS — one per WordPress category */}
-      {home.sections.map((section: HomeSection, idx) => (
+      {/* CATEGORY SECTIONS — one per fixed content pillar, ordered by taxonomy */}
+      {pillarSections.map((section: HomeSection, idx) => (
         <CategoryStrip key={section.category.id} section={section} index={idx} />
       ))}
 
