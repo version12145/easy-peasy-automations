@@ -292,8 +292,9 @@ function Home() {
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
           <div className="mb-8 flex items-end justify-between">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Latest</div>
-              <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Fresh from the hub</h2>
+              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Weekly Industry Updates</div>
+              <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Latest Knowledge & Insights</h2>
+              <p className="mt-3 max-w-2xl text-muted-foreground">Fresh tutorials, engineering concepts, AI breakthroughs, programming guides, cloud technologies, cybersecurity trends and career resources — published every week.</p>
             </div>
             <Link to="/articles" className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-navy hover:gap-2 transition-all">
               View all <ArrowRight className="h-4 w-4" />
