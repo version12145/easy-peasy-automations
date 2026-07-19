@@ -118,7 +118,7 @@ function Home() {
               {/* Stats — live from WordPress */}
               <div className="mt-12 grid grid-cols-3 gap-3 sm:gap-4">
                 {[
-                  { k: `${categories.length}`, v: "Content Pillars" },
+                  { k: `${categories.length}`, v: "Categories" },
                   { k: `${home.totalArticles}+`, v: "Published Articles" },
                   { k: `${home.featured.length + home.latest.length}+`, v: "Fresh This Week" },
                 ].map((s) => (
