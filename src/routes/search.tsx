@@ -33,7 +33,13 @@ export const Route = createFileRoute("/search")({
     meta: [
       { title: "Search — VEducate Academy" },
       { name: "description", content: "Search articles, tutorials and topics across VEducate Academy." },
+      { property: "og:title", content: "Search — VEducate Academy" },
+      { property: "og:description", content: "Find articles, tutorials and topics across the VEducate knowledge hub." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/search" },
+      { name: "robots", content: "noindex" },
     ],
+    links: [{ rel: "canonical", href: "/search" }],
   }),
   component: SearchPage,
 });
