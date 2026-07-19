@@ -58,7 +58,7 @@ export function HeroLogo() {
   return (
     <div
       ref={wrapRef}
-      className="relative flex h-[420px] sm:h-[520px] w-full items-center justify-center"
+      className="relative flex h-[360px] sm:h-[420px] w-full items-center justify-center"
       style={{ perspective: "1200px" }}
     >
       {/* Inline SVG turbulence filter for liquid distortion */}
@@ -79,40 +79,12 @@ export function HeroLogo() {
                 repeatCount="indefinite"
               />
             </feTurbulence>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale={active ? 18 : 8} />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale={active ? 16 : 6} />
           </filter>
         </defs>
       </svg>
 
-      {/* Ambient liquid blobs that follow the cursor */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-[3rem]"
-        style={{
-          background: `radial-gradient(600px circle at ${mx}% ${my}%, rgba(56,120,220,0.28), transparent 55%), radial-gradient(500px circle at ${100 - mx}% ${100 - my}%, rgba(120,180,255,0.22), transparent 60%)`,
-          transition: "background 200ms linear",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl animate-logo-glow"
-        style={{ background: "radial-gradient(circle, rgba(80,140,240,0.55), transparent 65%)" }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-navy/15 animate-spin-reverse-slow"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[440px] w-[440px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 animate-spin-slow"
-        style={{
-          background:
-            "conic-gradient(from 0deg, transparent 0deg, rgba(56,120,220,0.35) 60deg, transparent 140deg, rgba(120,180,255,0.5) 220deg, transparent 320deg)",
-          maskImage: "radial-gradient(circle, black 55%, transparent 72%)",
-          WebkitMaskImage: "radial-gradient(circle, black 55%, transparent 72%)",
-        }}
-      />
-
-      {/* The logo itself, tilting to the cursor with a liquid displacement */}
+      {/* The logo alone — floating and reacting to the cursor */}
       <div
         className="relative animate-logo-float will-change-transform"
         style={{
@@ -125,9 +97,9 @@ export function HeroLogo() {
           src={heroLogo.url}
           alt="VEducate Academy"
           draggable={false}
-          className="h-[260px] sm:h-[340px] w-auto select-none object-contain"
+          className="h-[240px] sm:h-[300px] w-auto select-none object-contain"
           style={{
-            filter: "url(#liquid-goo) drop-shadow(0 30px 40px rgba(20,40,90,0.25))",
+            filter: "url(#liquid-goo)",
           }}
         />
       </div>
