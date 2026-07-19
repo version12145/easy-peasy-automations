@@ -454,6 +454,46 @@ function Home() {
         </section>
       ) : null}
 
+      {/* ABOUT */}
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-start">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-widest text-blue">About VEducate Academy</div>
+            <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Bridging academia and the real world of technology</h2>
+            <p className="mt-5 text-base sm:text-lg leading-relaxed text-muted-foreground">
+              VEducate Academy is an AI-powered education and technology platform committed to empowering students, engineers and professionals through accessible, practical and industry-focused learning resources.
+            </p>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+              Our mission is to bridge the gap between academic education and real-world industry skills by delivering high-quality technical content, AI-powered learning experiences, practical tutorials and career guidance that prepares learners for the future.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="glass rounded-2xl p-6">
+              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Mission</div>
+              <p className="mt-3 text-sm leading-relaxed text-foreground">
+                Empower every learner with practical technology knowledge that transforms curiosity into real-world skills.
+              </p>
+            </div>
+            <div className="glass rounded-2xl p-6">
+              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Vision</div>
+              <p className="mt-3 text-sm leading-relaxed text-foreground">
+                Become one of the world's most trusted AI-powered learning ecosystems for engineering and technology education.
+              </p>
+            </div>
+            <div className="glass rounded-2xl p-6 sm:col-span-2">
+              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Core Values</div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {["Innovation", "Practical Learning", "Student Success", "Engineering Excellence", "Continuous Improvement", "Community Driven"].map((v) => (
+                  <span key={v} className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-foreground/80">
+                    {v}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* NEWSLETTER */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
         <div className="relative overflow-hidden rounded-3xl grad-navy p-8 sm:p-14 text-white shadow-navy">
@@ -462,13 +502,13 @@ function Home() {
           <div className="relative grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur-md">
-                <Sparkles className="h-3.5 w-3.5" /> The Weekly Signal
+                <Sparkles className="h-3.5 w-3.5" /> Weekly Industry Updates
               </div>
               <h2 className="mt-4 text-editorial text-4xl sm:text-5xl text-white">
-                One curated read.<br /><em className="italic text-blue-soft/90">Every Sunday.</em>
+                Stay Ahead with <em className="italic text-blue-soft/90">Technology.</em>
               </h2>
               <p className="mt-4 max-w-xl text-white/70">
-                Zero noise. Just the single best piece from the hub — plus one carefully chosen link from the wider internet.
+                Receive carefully curated tutorials, AI research, engineering insights, programming resources and technology updates directly in your inbox every week.
               </p>
             </div>
             <form
@@ -480,14 +520,14 @@ function Home() {
                 <input
                   type="email"
                   required
-                  placeholder="you@company.com"
+                  placeholder="you@example.com"
                   className="flex-1 min-w-0 rounded-full bg-white/10 border border-white/20 px-4 py-3 text-sm text-white placeholder:text-white/50 outline-none focus:ring-2 focus:ring-white/40"
                 />
                 <button className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-navy hover:bg-white/90">
-                  Subscribe
+                  Subscribe Free
                 </button>
               </div>
-              <p className="mt-3 text-[11px] text-white/60">Join 10,000+ engineers and students. Unsubscribe any time.</p>
+              <p className="mt-3 text-[11px] text-white/60">Join students, educators and future engineers. Unsubscribe any time.</p>
             </form>
           </div>
         </div>
