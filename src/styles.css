@@ -129,6 +129,11 @@
 
   body {
     background-color: var(--color-background);
+    background-image:
+      radial-gradient(ellipse 90% 60% at 10% -10%, rgba(29, 126, 201, 0.22), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 100% 10%, rgba(11, 42, 74, 0.18), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 50% 100%, rgba(29, 126, 201, 0.14), transparent 65%);
+    background-attachment: fixed;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
