@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import logo from "@/assets/veducate-mark.png.asset.json";
 
 const NAV = [
+  { to: "/", label: "Home" },
   { to: "/articles", label: "Articles" },
   { to: "/categories", label: "Categories" },
   { to: "/articles", label: "Collections", search: { collection: "all" } as const },
-  { to: "/articles", label: "Resources" },
 ] as const;
 
 export function SiteNav() {
