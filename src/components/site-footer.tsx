@@ -71,14 +71,14 @@ export function SiteFooter() {
                 <input
                   type="email"
                   required
-                  placeholder="you@company.com"
+                  placeholder="you@example.com"
                   className="flex-1 min-w-0 rounded-full border border-border bg-background px-4 py-2 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
                 />
                 <button
                   type="submit"
                   className="rounded-full grad-navy px-4 py-2 text-sm font-semibold text-white shadow-navy hover:opacity-90"
                 >
-                  Subscribe
+                  Subscribe Free
                 </button>
               </form>
             </div>
