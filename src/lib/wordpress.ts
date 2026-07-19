@@ -74,11 +74,13 @@ export type Category = {
   count: number;
 };
 
-export function stripHtml(html: string): string {
+export function stripHtml(html: string | undefined | null): string {
+  if (!html) return "";
   return html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
 }
 
-export function decodeEntities(s: string): string {
+export function decodeEntities(s: string | undefined | null): string {
+  if (!s) return "";
   return s
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
