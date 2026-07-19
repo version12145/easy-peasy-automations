@@ -3,31 +3,19 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   ArrowUpRight,
-  BookOpen,
-  Brain,
-  Briefcase,
-  Cloud,
   Clock,
-  Code2,
-  Shield,
   Sparkles,
-  TrendingUp,
 } from "lucide-react";
-import { listArticles, listCategories } from "@/lib/wordpress.functions";
-import { formatDate, type Category } from "@/lib/wordpress";
+import { getHomepage, type HomeSection } from "@/lib/wordpress.functions";
+import { formatDate, type Article, type Category } from "@/lib/wordpress";
 import { ArticleCard } from "@/components/article-card";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { HeroLogo } from "@/components/hero-logo";
 
-
-const latestQO = queryOptions({
-  queryKey: ["articles", "home"],
-  queryFn: () => listArticles({ data: { perPage: 13, page: 1 } }),
-});
-const categoriesQO = queryOptions({
-  queryKey: ["categories"],
-  queryFn: () => listCategories({ data: { perPage: 12 } }),
+const homeQO = queryOptions({
+  queryKey: ["homepage"],
+  queryFn: () => getHomepage({ data: { sectionsLimit: 8, postsPerSection: 4 } }),
 });
 
 export const Route = createFileRoute("/")({
@@ -50,40 +38,43 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
-  loader: async ({ context }) => {
-    await Promise.all([
-      context.queryClient.ensureQueryData(latestQO),
-      context.queryClient.ensureQueryData(categoriesQO),
-    ]);
-  },
+  loader: ({ context }) => context.queryClient.ensureQueryData(homeQO),
   component: Home,
 });
 
-const COLLECTIONS = [
-  { icon: Brain, title: "Complete Artificial Intelligence Roadmap", count: 42, hours: 18, tint: "from-blue-500/10 to-indigo-500/10" },
-  { icon: Code2, title: "Python Programming Mastery", count: 36, hours: 22, tint: "from-emerald-500/10 to-teal-500/10" },
-  { icon: Cloud, title: "Cloud Engineering Essentials", count: 30, hours: 20, tint: "from-sky-500/10 to-cyan-500/10" },
-  { icon: Shield, title: "Cybersecurity Fundamentals", count: 28, hours: 16, tint: "from-rose-500/10 to-orange-500/10" },
-  { icon: BookOpen, title: "Full Stack Web Development", count: 34, hours: 26, tint: "from-violet-500/10 to-fuchsia-500/10" },
-  { icon: Briefcase, title: "Placement Preparation Series", count: 24, hours: 14, tint: "from-amber-500/10 to-yellow-500/10" },
+/** Deterministic gradient per category slug — no hardcoded categories. */
+function slugHash(slug: string): number {
+  let h = 0;
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+const GRADIENTS = [
+  "from-blue-500/15 to-indigo-500/10",
+  "from-emerald-500/15 to-teal-500/10",
+  "from-sky-500/15 to-cyan-500/10",
+  "from-rose-500/15 to-orange-500/10",
+  "from-violet-500/15 to-fuchsia-500/10",
+  "from-amber-500/15 to-yellow-500/10",
 ];
-
-const CAT_ICONS = [Brain, Cloud, Code2, Shield, Briefcase, BookOpen, Sparkles, TrendingUp];
+function tintFor(slug: string) {
+  return GRADIENTS[slugHash(slug) % GRADIENTS.length];
+}
 
 function Home() {
-  const { data: latest } = useSuspenseQuery(latestQO);
-  const { data: categories } = useSuspenseQuery(categoriesQO);
+  const { data: home } = useSuspenseQuery(homeQO);
 
-  const feature = latest.articles[0];
-  const latestGrid = latest.articles.slice(1, 7);
-  const editorPicks = latest.articles.slice(7, 11);
-  const trending = categories.slice(0, 8);
+  // WordPress sticky posts drive "Featured". Fallback to newest post so the slot never sits empty.
+  const feature: Article | undefined = home.featured[0] ?? home.latest[0];
+  const latestGrid = home.latest
+    .filter((a) => a.id !== feature?.id)
+    .slice(0, 6);
+  const trending = home.categories.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteNav />
 
-      {/* HERO */}
+      {/* HERO — brand identity */}
       <section className="relative hero-gradient overflow-hidden pt-28 sm:pt-36 pb-16 sm:pb-24">
         <div className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute -top-24 left-1/3 h-96 w-96 rounded-full bg-blue/10 blur-3xl animate-float" />
@@ -92,7 +83,6 @@ function Home() {
 
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
-            {/* Left */}
             <div className="lg:col-span-6 animate-fade-up">
               <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1.5 text-xs font-medium text-navy">
                 <Sparkles className="h-3.5 w-3.5" />
@@ -103,7 +93,7 @@ function Home() {
                 <em className="italic grad-text">AI, technology & innovation.</em>
               </h1>
               <p className="mt-6 max-w-xl text-base sm:text-lg leading-relaxed text-muted-foreground">
-                VEducate Academy is a modern knowledge platform helping students, developers and aspiring professionals master Artificial Intelligence, Programming, Cloud, Cybersecurity, Engineering and Career Development through expert articles, practical guides and industry insights.
+                VEducate Academy is a modern knowledge platform helping students, developers and aspiring professionals master emerging technologies through expert articles, practical guides and industry insights.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link
@@ -121,12 +111,12 @@ function Home() {
                 </Link>
               </div>
 
-              {/* Stats */}
+              {/* Stats — live from WordPress */}
               <div className="mt-12 grid grid-cols-3 gap-3 sm:gap-4">
                 {[
-                  { k: "10+", v: "Technology Domains" },
-                  { k: `${Math.max(latest.total, 500)}+`, v: "Expert Articles" },
-                  { k: "100+", v: "Practical Tutorials" },
+                  { k: `${home.categories.length}+`, v: "Knowledge Domains" },
+                  { k: `${home.totalArticles}+`, v: "Published Articles" },
+                  { k: `${home.featured.length + home.latest.length}+`, v: "Fresh This Week" },
                 ].map((s) => (
                   <div key={s.v} className="glass rounded-2xl px-4 py-4 sm:px-5 sm:py-5">
                     <div className="text-xl sm:text-2xl font-bold tracking-tight grad-text">{s.k}</div>
@@ -136,16 +126,14 @@ function Home() {
               </div>
             </div>
 
-            {/* Right — interactive liquid logo */}
             <div className="lg:col-span-6 animate-fade-up" style={{ animationDelay: "120ms" }}>
               <HeroLogo />
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* TRENDING TOPICS */}
+      {/* TRENDING TOPICS — dynamic from WordPress */}
       {trending.length > 0 ? (
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-10">
           <div className="glass rounded-3xl p-4 sm:p-5">
@@ -156,7 +144,7 @@ function Home() {
                 </span>
                 <div className="mx-1 hidden sm:block h-5 w-px shrink-0 bg-border" />
                 <div className="flex items-center gap-2">
-                  {trending.map((c) => (
+                  {trending.map((c: Category) => (
                     <Link
                       key={c.id}
                       to="/category/$slug"
@@ -176,14 +164,20 @@ function Home() {
         </section>
       ) : null}
 
-      {/* FEATURED STORY — magazine hero */}
+      {/* FEATURED — WordPress sticky post */}
       {feature ? (
         <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16 sm:py-24">
           <div className="mb-8 flex items-end justify-between">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Editor's Choice</div>
-              <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Featured Insights</h2>
-              <p className="mt-3 max-w-2xl text-muted-foreground">Our most valuable articles, carefully selected by the VEducate Academy editorial team to help you stay ahead in today's rapidly evolving technology landscape.</p>
+              <div className="text-xs font-semibold uppercase tracking-widest text-blue">
+                {home.featured.length > 0 ? "Featured" : "Latest"}
+              </div>
+              <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Editor's Choice</h2>
+              <p className="mt-3 max-w-2xl text-muted-foreground">
+                {home.featured.length > 0
+                  ? "Pinned by the editorial team in WordPress — the story we want you to read first."
+                  : "The newest publication from VEducate Academy."}
+              </p>
             </div>
           </div>
 
@@ -208,7 +202,7 @@ function Home() {
               <div className="flex flex-col justify-center p-8 sm:p-12">
                 {feature.category ? (
                   <span className="inline-flex w-fit items-center rounded-full bg-blue-soft px-3 py-1 text-xs font-semibold text-navy">
-                    Featured · {feature.category.name}
+                    {feature.category.name}
                   </span>
                 ) : null}
                 <h3 className="mt-5 text-editorial text-3xl sm:text-4xl lg:text-5xl text-foreground">
@@ -244,14 +238,14 @@ function Home() {
         </section>
       ) : null}
 
-      {/* LATEST — magazine layout */}
+      {/* LATEST — magazine layout, from WordPress date order */}
       {latestGrid.length > 0 ? (
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
           <div className="mb-8 flex items-end justify-between">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Weekly Industry Updates</div>
-              <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Latest Knowledge & Insights</h2>
-              <p className="mt-3 max-w-2xl text-muted-foreground">Fresh tutorials, engineering concepts, AI breakthroughs, programming guides, cloud technologies, cybersecurity trends and career resources — published every week.</p>
+              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Fresh from the CMS</div>
+              <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Latest Articles</h2>
+              <p className="mt-3 max-w-2xl text-muted-foreground">Every new publication from WordPress appears here automatically.</p>
             </div>
             <Link to="/articles" className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-navy hover:gap-2 transition-all">
               View all <ArrowRight className="h-4 w-4" />
@@ -260,11 +254,8 @@ function Home() {
 
           <div className="grid gap-6 lg:grid-cols-6">
             {latestGrid.map((a, i) => {
-              // First is large (spans 4 cols on desktop), then 2-2-1-1
               const span =
-                i === 0 ? "lg:col-span-4 lg:row-span-2" :
-                i === 1 || i === 2 ? "lg:col-span-2" :
-                "lg:col-span-2";
+                i === 0 ? "lg:col-span-4 lg:row-span-2" : "lg:col-span-2";
               const size = i === 0 ? "lg" : "md";
               return (
                 <div key={a.id} className={span}>
@@ -276,182 +267,12 @@ function Home() {
         </section>
       ) : null}
 
-      {/* BROWSE CATEGORIES */}
-      <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
-        <div className="mb-10 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
-          <div className="min-w-0">
-            <div className="text-xs font-semibold uppercase tracking-widest text-blue">Built for Students & Professionals</div>
-            <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Explore Learning Topics</h2>
-            <p className="mt-3 max-w-2xl text-muted-foreground">Browse knowledge across multiple technology domains — designed for engineering students, aspiring professionals and lifelong learners.</p>
-          </div>
-          <Link to="/categories" className="shrink-0 text-sm font-semibold text-navy hover:underline">All →</Link>
-        </div>
+      {/* DYNAMIC CATEGORY SECTIONS — one per WordPress category */}
+      {home.sections.map((section: HomeSection, idx) => (
+        <CategoryStrip key={section.category.id} section={section} index={idx} />
+      ))}
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.slice(0, 6).map((c: Category, i) => {
-            const Icon = CAT_ICONS[i % CAT_ICONS.length];
-            return (
-              <Link
-                key={c.id}
-                to="/category/$slug"
-                params={{ slug: c.slug }}
-                className="group relative overflow-hidden rounded-3xl glass hover-lift p-6 sm:p-7 animate-fade-up"
-                style={{ animationDelay: `${i * 50}ms` }}
-              >
-                <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-blue/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                <div className="grid h-12 w-12 place-items-center rounded-2xl grad-navy text-white">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <h3 className="mt-5 text-xl font-bold tracking-tight text-foreground group-hover:text-navy">{c.name}</h3>
-                {c.description ? (
-                  <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{c.description}</p>
-                ) : (
-                  <p className="mt-2 text-sm text-muted-foreground">Curated articles and roadmaps.</p>
-                )}
-                <div className="mt-6 flex items-center justify-between">
-                  <span className="text-xs font-medium text-muted-foreground">{c.count} articles</span>
-                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-navy transition-transform group-hover:translate-x-0.5">
-                    Explore <ArrowRight className="h-4 w-4" />
-                  </span>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* LEARNING COLLECTIONS */}
-      <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
-        <div className="mb-10">
-          <div className="text-xs font-semibold uppercase tracking-widest text-blue">Structured Journeys</div>
-          <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Learning Collections</h2>
-          <p className="mt-3 max-w-2xl text-muted-foreground">Structured learning journeys carefully organized by VEducate Academy to help you master new technologies from beginner to advanced levels.</p>
-        </div>
-
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {COLLECTIONS.map((col, i) => {
-            const Icon = col.icon;
-            return (
-              <div
-                key={col.title}
-                className={`group relative overflow-hidden rounded-3xl glass hover-lift p-6 sm:p-7 animate-fade-up`}
-                style={{ animationDelay: `${i * 50}ms` }}
-              >
-                <div className={`pointer-events-none absolute inset-0 bg-linear-to-br ${col.tint} opacity-60`} />
-                <div className="relative">
-                  <div className="grid h-12 w-12 place-items-center rounded-2xl bg-white/70 text-navy backdrop-blur-md ring-1 ring-white">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-5 text-xl font-bold tracking-tight text-foreground">{col.title}</h3>
-                  <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                    <span className="inline-flex items-center gap-1"><BookOpen className="h-3.5 w-3.5" /> {col.count} articles</span>
-                    <span>·</span>
-                    <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {col.hours}h to complete</span>
-                  </div>
-                  <button className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-navy transition-transform group-hover:translate-x-0.5">
-                    Continue learning <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* EDITOR'S PICKS — horizontal magazine cards */}
-      {editorPicks.length > 0 ? (
-        <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
-          <div className="mb-10">
-            <div className="text-xs font-semibold uppercase tracking-widest text-blue">Editor's Picks</div>
-            <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Handpicked by the editorial team</h2>
-            <p className="mt-3 max-w-2xl text-muted-foreground">Articles featuring practical insights, industry trends and expert knowledge recommended by the VEducate Academy editorial team.</p>
-          </div>
-
-          <div className="space-y-5">
-            {editorPicks.map((a, i) => (
-              <Link
-                key={a.id}
-                to="/articles/$slug"
-                params={{ slug: a.slug }}
-                className="group block overflow-hidden rounded-3xl glass hover-lift animate-fade-up"
-                style={{ animationDelay: `${i * 60}ms` }}
-              >
-                <div className="grid gap-0 sm:grid-cols-[280px_1fr] lg:grid-cols-[360px_1fr]">
-                  <div className="relative aspect-[4/3] sm:aspect-auto overflow-hidden bg-surface-2">
-                    {a.image ? (
-                      <img src={a.image} alt={a.imageAlt} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                    ) : (
-                      <div className="h-full w-full grad-navy" />
-                    )}
-                  </div>
-                  <div className="flex flex-col justify-center p-6 sm:p-8">
-                    {a.category ? (
-                      <span className="inline-flex w-fit items-center rounded-full bg-blue-soft px-2.5 py-1 text-[11px] font-semibold text-navy">
-                        {a.category.name}
-                      </span>
-                    ) : null}
-                    <h3 className="mt-4 text-2xl font-bold leading-tight tracking-tight text-foreground group-hover:text-navy">
-                      {a.title}
-                    </h3>
-                    {a.excerpt ? (
-                      <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{a.excerpt}</p>
-                    ) : null}
-                    <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="font-semibold text-foreground">{a.author?.name ?? "VEducate"}</span>
-                      <span>·</span>
-                      <span>{formatDate(a.date)}</span>
-                      <span>·</span>
-                      <Clock className="h-3.5 w-3.5" /> {a.readingTime} min
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {/* ABOUT */}
-      <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-start">
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-widest text-blue">About VEducate Academy</div>
-            <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Bridging academia and the real world of technology</h2>
-            <p className="mt-5 text-base sm:text-lg leading-relaxed text-muted-foreground">
-              VEducate Academy is an AI-powered education and technology platform committed to empowering students, engineers and professionals through accessible, practical and industry-focused learning resources.
-            </p>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              Our mission is to bridge the gap between academic education and real-world industry skills by delivering high-quality technical content, AI-powered learning experiences, practical tutorials and career guidance that prepares learners for the future.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="glass rounded-2xl p-6">
-              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Mission</div>
-              <p className="mt-3 text-sm leading-relaxed text-foreground">
-                Empower every learner with practical technology knowledge that transforms curiosity into real-world skills.
-              </p>
-            </div>
-            <div className="glass rounded-2xl p-6">
-              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Vision</div>
-              <p className="mt-3 text-sm leading-relaxed text-foreground">
-                Become one of the world's most trusted AI-powered learning ecosystems for engineering and technology education.
-              </p>
-            </div>
-            <div className="glass rounded-2xl p-6 sm:col-span-2">
-              <div className="text-xs font-semibold uppercase tracking-widest text-blue">Core Values</div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {["Innovation", "Practical Learning", "Student Success", "Engineering Excellence", "Continuous Improvement", "Community Driven"].map((v) => (
-                  <span key={v} className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-foreground/80">
-                    {v}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* NEWSLETTER */}
+      {/* NEWSLETTER — brand section (footer owns the primary newsletter card) */}
       <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
         <div className="relative overflow-hidden rounded-3xl grad-navy p-8 sm:p-14 text-white shadow-navy">
           <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
@@ -492,5 +313,56 @@ function Home() {
 
       <SiteFooter />
     </div>
+  );
+}
+
+/** A dynamic per-category strip. Structure is fully driven by WordPress data. */
+function CategoryStrip({ section, index }: { section: HomeSection; index: number }) {
+  const { category, articles } = section;
+  const tint = tintFor(category.slug);
+  const [hero, ...rest] = articles;
+  return (
+    <section
+      className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24 animate-fade-up"
+      style={{ animationDelay: `${Math.min(index, 4) * 40}ms` }}
+    >
+      <div className={`relative overflow-hidden rounded-3xl bg-linear-to-br ${tint} p-6 sm:p-10`}>
+        <div className="mb-8 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
+          <div className="min-w-0">
+            <div className="text-xs font-semibold uppercase tracking-widest text-blue">Latest in</div>
+            <h2 className="mt-2 text-editorial text-3xl sm:text-4xl text-foreground">
+              {category.name}
+            </h2>
+            {category.description ? (
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground line-clamp-2">
+                {category.description}
+              </p>
+            ) : (
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                {category.count} article{category.count === 1 ? "" : "s"} published in this topic.
+              </p>
+            )}
+          </div>
+          <Link
+            to="/category/$slug"
+            params={{ slug: category.slug }}
+            className="shrink-0 inline-flex items-center gap-1 text-sm font-semibold text-navy hover:gap-2 transition-all"
+          >
+            View all <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+
+        {hero ? (
+          <div className="grid gap-5 lg:grid-cols-[1.6fr_1fr]">
+            <ArticleCard article={hero} size="lg" />
+            <div className="grid gap-5">
+              {rest.slice(0, 3).map((a) => (
+                <ArticleCard key={a.id} article={a} size="sm" />
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </section>
   );
 }

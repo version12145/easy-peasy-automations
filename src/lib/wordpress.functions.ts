@@ -111,13 +111,13 @@ export const getRelatedArticles = createServerFn({ method: "GET" })
   });
 
 export const listCategories = createServerFn({ method: "GET" })
-  .inputValidator((d: { perPage?: number; hideEmpty?: boolean } = {}) => d)
+  .inputValidator((d: { perPage?: number; hideEmpty?: boolean; orderby?: "count" | "name" | "id" | "slug"; order?: "asc" | "desc" } = {}) => d)
   .handler(async ({ data }): Promise<Category[]> => {
     const params = new URLSearchParams({
       per_page: String(data.perPage ?? 50),
       hide_empty: String(data.hideEmpty ?? true),
-      orderby: "count",
-      order: "desc",
+      orderby: data.orderby ?? "count",
+      order: data.order ?? "desc",
     });
     const { body } = await wpFetch(`/categories?${params.toString()}`);
     const raw = JSON.parse(body) as WPTerm[];
@@ -144,5 +144,84 @@ export const getCategoryBySlug = createServerFn({ method: "GET" })
       slug: t.slug,
       description: decodeEntities(t.description ?? ""),
       count: t.count ?? 0,
+    };
+  });
+
+/**
+ * Fully WordPress-driven homepage payload.
+ * WordPress controls: sticky/featured posts, latest posts, category list & order,
+ * per-category articles. Frontend just renders whatever comes back.
+ */
+export type HomeSection = {
+  category: Category;
+  articles: Article[];
+};
+
+export type HomePayload = {
+  featured: Article[];
+  latest: Article[];
+  categories: Category[];
+  sections: HomeSection[];
+  totalArticles: number;
+};
+
+export const getHomepage = createServerFn({ method: "GET" })
+  .inputValidator((d: { sectionsLimit?: number; postsPerSection?: number } = {}) => d)
+  .handler(async ({ data }): Promise<HomePayload> => {
+    const sectionsLimit = Math.min(data.sectionsLimit ?? 8, 20);
+    const postsPerSection = Math.min(data.postsPerSection ?? 4, 12);
+
+    const stickyParams = new URLSearchParams({ _embed: "1", per_page: "3", sticky: "true" });
+    const latestParams = new URLSearchParams({ _embed: "1", per_page: "13" });
+    const catParams = new URLSearchParams({
+      per_page: "50",
+      hide_empty: "true",
+      orderby: "count",
+      order: "desc",
+    });
+
+    const [stickyRes, latestRes, catsRes] = await Promise.all([
+      wpFetch(`/posts?${stickyParams.toString()}`).catch(() => null),
+      wpFetch(`/posts?${latestParams.toString()}`),
+      wpFetch(`/categories?${catParams.toString()}`),
+    ]);
+
+    const stickyRaw = stickyRes ? (JSON.parse(stickyRes.body) as WPPostRaw[]) : [];
+    const latestRaw = JSON.parse(latestRes.body) as WPPostRaw[];
+    const catsRaw = JSON.parse(catsRes.body) as WPTerm[];
+
+    const categories: Category[] = catsRaw.map((t) => ({
+      id: t.id,
+      name: decodeEntities(t.name),
+      slug: t.slug,
+      description: decodeEntities(t.description ?? ""),
+      count: t.count ?? 0,
+    }));
+
+    const sectionCats = categories.slice(0, sectionsLimit);
+
+    const sectionResults = await Promise.all(
+      sectionCats.map(async (cat) => {
+        const p = new URLSearchParams({
+          _embed: "1",
+          per_page: String(postsPerSection),
+          categories: String(cat.id),
+        });
+        try {
+          const { body } = await wpFetch(`/posts?${p.toString()}`);
+          const raw = JSON.parse(body) as WPPostRaw[];
+          return { category: cat, articles: raw.map(normalizePost) };
+        } catch {
+          return { category: cat, articles: [] };
+        }
+      })
+    );
+
+    return {
+      featured: stickyRaw.map(normalizePost),
+      latest: latestRaw.map(normalizePost),
+      categories,
+      sections: sectionResults.filter((s) => s.articles.length > 0),
+      totalArticles: Number(latestRes.res.headers.get("x-wp-total") ?? latestRaw.length),
     };
   });
