@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TodayRouteImport } from './routes/today'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
@@ -17,6 +18,11 @@ import { Route as TagSlugRouteImport } from './routes/tag.$slug'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as ArticlesSlugRouteImport } from './routes/articles.$slug'
 
+const TodayRoute = TodayRouteImport.update({
+  id: '/today',
+  path: '/today',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
@@ -56,6 +62,7 @@ const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
+  '/today': typeof TodayRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/tag/$slug': typeof TagSlugRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
+  '/today': typeof TodayRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/tag/$slug': typeof TagSlugRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/search': typeof SearchRoute
+  '/today': typeof TodayRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/category/$slug': typeof CategorySlugRoute
   '/tag/$slug': typeof TagSlugRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/search'
+    | '/today'
     | '/articles/$slug'
     | '/category/$slug'
     | '/tag/$slug'
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/search'
+    | '/today'
     | '/articles/$slug'
     | '/category/$slug'
     | '/tag/$slug'
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/search'
+    | '/today'
     | '/articles/$slug'
     | '/category/$slug'
     | '/tag/$slug'
@@ -114,6 +126,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SearchRoute: typeof SearchRoute
+  TodayRoute: typeof TodayRoute
   ArticlesSlugRoute: typeof ArticlesSlugRoute
   CategorySlugRoute: typeof CategorySlugRoute
   TagSlugRoute: typeof TagSlugRoute
@@ -123,6 +136,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/today': {
+      id: '/today'
+      path: '/today'
+      fullPath: '/today'
+      preLoaderRoute: typeof TodayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search': {
       id: '/search'
       path: '/search'
@@ -178,6 +198,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SearchRoute: SearchRoute,
+  TodayRoute: TodayRoute,
   ArticlesSlugRoute: ArticlesSlugRoute,
   CategorySlugRoute: CategorySlugRoute,
   TagSlugRoute: TagSlugRoute,
