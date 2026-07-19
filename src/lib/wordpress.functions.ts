@@ -20,7 +20,7 @@ async function wpFetch(path: string): Promise<{ res: Response; body: string }> {
 }
 
 export const listArticles = createServerFn({ method: "GET" })
-  .inputValidator((d: { page?: number; perPage?: number; categoryId?: number; sticky?: boolean; search?: string } = {}) => d)
+  .inputValidator((d: { page?: number; perPage?: number; categoryId?: number; sticky?: boolean; search?: string; orderby?: "date" | "relevance" | "title"; order?: "asc" | "desc" } = {}) => d)
   .handler(async ({ data }): Promise<{ articles: Article[]; total: number; totalPages: number }> => {
     const params = new URLSearchParams();
     params.set("_embed", "1");
@@ -29,12 +29,61 @@ export const listArticles = createServerFn({ method: "GET" })
     if (data.categoryId) params.set("categories", String(data.categoryId));
     if (data.search) params.set("search", data.search);
     if (data.sticky) params.set("sticky", "true");
+    if (data.orderby) params.set("orderby", data.orderby);
+    if (data.order) params.set("order", data.order);
     const { res, body } = await wpFetch(`/posts?${params.toString()}`);
     const raw = JSON.parse(body) as WPPostRaw[];
     return {
       articles: raw.map(normalizePost),
       total: Number(res.headers.get("x-wp-total") ?? raw.length),
       totalPages: Number(res.headers.get("x-wp-totalpages") ?? 1),
+    };
+  });
+
+export type SearchHitCategory = { id: number; name: string; slug: string; count: number };
+export type SearchHitTag = { id: number; name: string; slug: string };
+export type SiteSearchResult = {
+  articles: Article[];
+  total: number;
+  totalPages: number;
+  categories: SearchHitCategory[];
+  tags: SearchHitTag[];
+};
+
+export const siteSearch = createServerFn({ method: "GET" })
+  .inputValidator((d: { q: string; page?: number; perPage?: number; categoryId?: number; orderby?: "relevance" | "date" | "title"; order?: "asc" | "desc" }) => d)
+  .handler(async ({ data }): Promise<SiteSearchResult> => {
+    const q = (data.q ?? "").trim();
+    if (!q) return { articles: [], total: 0, totalPages: 0, categories: [], tags: [] };
+
+    const postParams = new URLSearchParams();
+    postParams.set("_embed", "1");
+    postParams.set("per_page", String(Math.min(data.perPage ?? 12, 50)));
+    postParams.set("page", String(data.page ?? 1));
+    postParams.set("search", q);
+    postParams.set("orderby", data.orderby ?? "relevance");
+    postParams.set("order", data.order ?? "desc");
+    if (data.categoryId) postParams.set("categories", String(data.categoryId));
+
+    const catParams = new URLSearchParams({ search: q, per_page: "10", hide_empty: "true" });
+    const tagParams = new URLSearchParams({ search: q, per_page: "10", hide_empty: "true" });
+
+    const [postsRes, catsRes, tagsRes] = await Promise.all([
+      wpFetch(`/posts?${postParams.toString()}`),
+      wpFetch(`/categories?${catParams.toString()}`).catch(() => null),
+      wpFetch(`/tags?${tagParams.toString()}`).catch(() => null),
+    ]);
+
+    const rawPosts = JSON.parse(postsRes.body) as WPPostRaw[];
+    const cats = catsRes ? (JSON.parse(catsRes.body) as WPTerm[]) : [];
+    const tags = tagsRes ? (JSON.parse(tagsRes.body) as WPTerm[]) : [];
+
+    return {
+      articles: rawPosts.map(normalizePost),
+      total: Number(postsRes.res.headers.get("x-wp-total") ?? rawPosts.length),
+      totalPages: Number(postsRes.res.headers.get("x-wp-totalpages") ?? 1),
+      categories: cats.map((t) => ({ id: t.id, name: decodeEntities(t.name), slug: t.slug, count: t.count ?? 0 })),
+      tags: tags.map((t) => ({ id: t.id, name: decodeEntities(t.name), slug: t.slug })),
     };
   });
 
