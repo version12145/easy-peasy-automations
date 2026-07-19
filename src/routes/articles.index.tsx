@@ -102,7 +102,7 @@ function ArticlesPage() {
       </header>
 
       <section className="mx-auto max-w-6xl px-4 sm:px-6 pt-8">
-        {/* Search bar */}
+        {/* Search bar + filter toggle */}
         <div className="glass-strong rounded-2xl p-2 sm:p-2.5 flex items-center gap-2">
           <Search className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
           <input
@@ -121,48 +121,97 @@ function ArticlesPage() {
               <X className="h-4 w-4" />
             </button>
           ) : null}
-        </div>
-
-        {/* Category filter chips */}
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <div className="h-6 w-px bg-border mx-1" />
           <button
-            onClick={() => setCategory("")}
-            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
-              !category
+            onClick={() => setFiltersOpen((v) => !v)}
+            aria-expanded={filtersOpen}
+            aria-label="Toggle category filters"
+            className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs font-semibold transition-colors ${
+              filtersOpen || category
                 ? "bg-navy text-white shadow-navy"
-                : "border border-border bg-surface text-foreground/80 hover:border-blue hover:text-navy"
+                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
             }`}
           >
-            All
+            <Filter className="h-4 w-4" />
+            <span className="hidden sm:inline">Filter</span>
+            {category ? (
+              <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-white/20 px-1.5 text-[10px] font-bold">
+                1
+              </span>
+            ) : null}
           </button>
-          {categories.map((c: Category) => {
-            const active = c.slug === category;
-            return (
+        </div>
+
+        {/* Category filter panel */}
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-out ${
+            filtersOpen ? "mt-4 max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="glass rounded-2xl p-4 sm:p-5">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Filter by category
+              </span>
+              {hasFilters ? (
+                <button
+                  onClick={clearAll}
+                  className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-muted-foreground hover:bg-secondary hover:text-navy"
+                >
+                  <X className="h-3.5 w-3.5" /> Clear
+                </button>
+              ) : null}
+            </div>
+            <div className="flex flex-wrap gap-2">
               <button
-                key={c.id}
-                onClick={() => setCategory(c.slug)}
+                onClick={() => setCategory("")}
                 className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
-                  active
+                  !category
                     ? "bg-navy text-white shadow-navy"
                     : "border border-border bg-surface text-foreground/80 hover:border-blue hover:text-navy"
                 }`}
               >
-                {c.name}
-                <span className={`ml-1.5 text-[10px] font-bold ${active ? "text-white/70" : "text-muted-foreground"}`}>
-                  {c.count}
-                </span>
+                All
               </button>
-            );
-          })}
-          {hasFilters ? (
-            <button
-              onClick={clearAll}
-              className="ml-auto inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-navy"
-            >
-              <X className="h-3.5 w-3.5" /> Clear filters
-            </button>
-          ) : null}
+              {categories.map((c: Category) => {
+                const active = c.slug === category;
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => setCategory(c.slug)}
+                    className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                      active
+                        ? "bg-navy text-white shadow-navy"
+                        : "border border-border bg-surface text-foreground/80 hover:border-blue hover:text-navy"
+                    }`}
+                  >
+                    {c.name}
+                    <span className={`ml-1.5 text-[10px] font-bold ${active ? "text-white/70" : "text-muted-foreground"}`}>
+                      {c.count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
+
+        {/* Active filter summary */}
+        {category && !filtersOpen ? (
+          <div className="mt-4 flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">Active filter:</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3 py-1 text-xs font-semibold text-white">
+              {activeCategory?.name}
+              <button
+                onClick={() => setCategory("")}
+                aria-label="Remove category filter"
+                className="grid h-4 w-4 place-items-center rounded-full hover:bg-white/20"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </span>
+          </div>
+        ) : null}
       </section>
 
       <section className="mx-auto max-w-6xl px-4 sm:px-6 py-12">
