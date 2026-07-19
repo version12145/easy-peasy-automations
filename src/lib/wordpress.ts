@@ -124,7 +124,7 @@ export function normalizePost(raw: WPPostRaw): Article {
     modified: raw.modified,
     readingTime: readingTimeMinutes(raw.content?.rendered),
     image,
-    imageAlt: media?.alt_text || decodeEntities(raw.title.rendered),
+    imageAlt: media?.alt_text || decodeEntities(raw.title?.rendered),
     author: author
       ? {
           name: decodeEntities(author.name),
