@@ -4,6 +4,7 @@ import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { useEffect, useState, Suspense } from "react";
 import logo from "@/assets/veducate-mark.png.asset.json";
 import { listCategories } from "@/lib/wordpress.functions";
+import { filterAndOrderPillarCategories } from "@/lib/taxonomy";
 
 const STATIC_NAV = [
   { to: "/", label: "Home" },
@@ -13,7 +14,7 @@ const STATIC_NAV = [
 
 const navCategoriesQO = queryOptions({
   queryKey: ["nav-categories"],
-  queryFn: () => listCategories({ data: { perPage: 8, hideEmpty: true } }),
+  queryFn: async () => filterAndOrderPillarCategories(await listCategories({ data: { perPage: 100, hideEmpty: true } })),
   staleTime: 5 * 60_000,
 });
 
