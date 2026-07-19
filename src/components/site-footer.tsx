@@ -63,9 +63,13 @@ export function SiteFooter() {
               A modern knowledge hub for engineers, students and creators. In-depth guides on AI, cloud, security and career craft.
             </p>
 
+            <p className="mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
+              VEducate Academy is a modern AI-powered education and technology platform dedicated to helping students and professionals learn faster, build stronger technical skills, and stay ahead in an ever-changing digital world.
+            </p>
+
             <div className="mt-8 glass rounded-2xl p-5">
-              <div className="text-sm font-semibold text-foreground">The Weekly Signal</div>
-              <p className="mt-1 text-xs text-muted-foreground">One curated read every Sunday. No noise.</p>
+              <div className="text-sm font-semibold text-foreground">Stay Ahead with Technology</div>
+              <p className="mt-1 text-xs text-muted-foreground">Curated tutorials, AI research and engineering insights — every week.</p>
               <form className="mt-4 flex gap-2" onSubmit={(e) => e.preventDefault()}>
                 <input
                   type="email"
