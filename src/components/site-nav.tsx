@@ -3,7 +3,7 @@ import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { useEffect, useState, Suspense } from "react";
 import logo from "@/assets/veducate-mark.png.asset.json";
-import { listCategories } from "@/lib/wordpress.functions";
+import { listTags } from "@/lib/wordpress.functions";
 
 const STATIC_NAV = [
   { to: "/", label: "Home" },
@@ -12,16 +12,17 @@ const STATIC_NAV = [
   { to: "/categories", label: "Categories" },
 ] as const;
 
-const navCategoriesQO = queryOptions({
-  queryKey: ["nav-categories"],
-  queryFn: () => listCategories({ data: { perPage: 100, hideEmpty: true } }),
+const trendingTagsQO = queryOptions({
+  queryKey: ["nav-trending-tags"],
+  queryFn: () => listTags({ data: { perPage: 10, hideEmpty: true, orderby: "count", order: "desc" } }),
   staleTime: 5 * 60_000,
 });
 
-function CategoriesDropdown() {
-  const { data: cats } = useSuspenseQuery(navCategoriesQO);
+function TrendingDropdown() {
+  const { data: tags } = useSuspenseQuery(trendingTagsQO);
   const [open, setOpen] = useState(false);
-  if (!cats.length) return null;
+  const top = tags.slice(0, 10);
+  if (!top.length) return null;
   return (
     <div className="relative" onMouseLeave={() => setOpen(false)}>
       <button
@@ -29,21 +30,24 @@ function CategoriesDropdown() {
         onMouseEnter={() => setOpen(true)}
         className="inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
       >
-        Topics <ChevronDown className="h-3.5 w-3.5" />
+        Trending <ChevronDown className="h-3.5 w-3.5" />
       </button>
       {open ? (
         <div className="absolute left-0 top-full pt-2">
-          <div className="glass-strong rounded-2xl p-2 min-w-56 shadow-navy/20 shadow-2xl">
-            {cats.map((c) => (
+          <div className="glass-strong rounded-2xl p-2 min-w-64 shadow-navy/20 shadow-2xl">
+            <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Trending Topics
+            </div>
+            {top.map((t, i) => (
               <Link
-                key={c.id}
-                to="/category/$slug"
-                params={{ slug: c.slug }}
+                key={t.id}
+                to="/tag/$slug"
+                params={{ slug: t.slug }}
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between gap-4 rounded-xl px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary"
+                className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary"
               >
-                <span className="truncate">{c.name}</span>
-                <span className="shrink-0 text-xs text-muted-foreground">{c.count}</span>
+                <span className="w-5 shrink-0 text-center text-sm">{i < 3 ? "🔥" : ""}</span>
+                <span className="truncate">{t.name}</span>
               </Link>
             ))}
           </div>
@@ -52,6 +56,7 @@ function CategoriesDropdown() {
     </div>
   );
 }
+
 
 export function SiteNav() {
   const navigate = useNavigate();
@@ -96,7 +101,7 @@ export function SiteNav() {
             </Link>
           ))}
           <Suspense fallback={null}>
-            <CategoriesDropdown />
+            <TrendingDropdown />
           </Suspense>
         </div>
 
@@ -132,7 +137,7 @@ export function SiteNav() {
               </Link>
             ))}
             <Suspense fallback={null}>
-              <MobileCategories onNavigate={() => setOpen(false)} />
+              <MobileTrending onNavigate={() => setOpen(false)} />
             </Suspense>
           </div>
         </div>
@@ -141,23 +146,25 @@ export function SiteNav() {
   );
 }
 
-function MobileCategories({ onNavigate }: { onNavigate: () => void }) {
-  const { data: cats } = useSuspenseQuery(navCategoriesQO);
-  if (!cats.length) return null;
+function MobileTrending({ onNavigate }: { onNavigate: () => void }) {
+  const { data: tags } = useSuspenseQuery(trendingTagsQO);
+  const top = tags.slice(0, 10);
+  if (!top.length) return null;
   return (
     <>
       <div className="mt-2 border-t border-border/60 pt-2 px-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-        Topics
+        Trending Topics
       </div>
-      {cats.map((c) => (
+      {top.map((t, i) => (
         <Link
-          key={c.id}
-          to="/category/$slug"
-          params={{ slug: c.slug }}
+          key={t.id}
+          to="/tag/$slug"
+          params={{ slug: t.slug }}
           onClick={onNavigate}
-          className="block rounded-xl px-4 py-2.5 text-sm font-medium text-foreground hover:bg-secondary"
+          className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-foreground hover:bg-secondary"
         >
-          {c.name}
+          <span className="w-5 shrink-0 text-center">{i < 3 ? "🔥" : ""}</span>
+          <span className="truncate">{t.name}</span>
         </Link>
       ))}
     </>
