@@ -48,7 +48,12 @@ export const Route = createFileRoute("/articles/")({
     meta: [
       { title: "Articles — VEducate Academy" },
       { name: "description", content: "Every article from the VEducate Academy knowledge hub. Search and filter by category." },
+      { property: "og:title", content: "Articles — VEducate Academy" },
+      { property: "og:description", content: "Browse every article on AI, programming, cloud, cybersecurity and engineering." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/articles" },
     ],
+    links: [{ rel: "canonical", href: "/articles" }],
   }),
   component: ArticlesPage,
 });
