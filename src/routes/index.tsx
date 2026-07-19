@@ -323,9 +323,9 @@ function Home() {
       <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-24">
         <div className="mb-10 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-4">
           <div className="min-w-0">
-            <div className="text-xs font-semibold uppercase tracking-widest text-blue">Browse</div>
-            <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Categories</h2>
-            <p className="mt-3 max-w-xl text-muted-foreground">Deep dives grouped by discipline — pick a track and go.</p>
+            <div className="text-xs font-semibold uppercase tracking-widest text-blue">Built for Students & Professionals</div>
+            <h2 className="mt-2 text-editorial text-4xl sm:text-5xl text-foreground">Explore Learning Topics</h2>
+            <p className="mt-3 max-w-2xl text-muted-foreground">Browse knowledge across multiple technology domains — designed for engineering students, aspiring professionals and lifelong learners.</p>
           </div>
           <Link to="/categories" className="shrink-0 text-sm font-semibold text-navy hover:underline">All →</Link>
         </div>
