@@ -97,7 +97,7 @@ export function decodeEntities(s: string | undefined | null): string {
     .replace(/&nbsp;/g, " ");
 }
 
-export function readingTimeMinutes(html: string): number {
+export function readingTimeMinutes(html: string | undefined | null): number {
   const words = stripHtml(html).split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 220));
 }
@@ -117,12 +117,12 @@ export function normalizePost(raw: WPPostRaw): Article {
   return {
     id: raw.id,
     slug: raw.slug,
-    title: decodeEntities(raw.title.rendered),
-    excerpt: decodeEntities(stripHtml(raw.excerpt.rendered)),
-    content: raw.content.rendered,
+    title: decodeEntities(raw.title?.rendered),
+    excerpt: decodeEntities(stripHtml(raw.excerpt?.rendered)),
+    content: raw.content?.rendered ?? "",
     date: raw.date,
     modified: raw.modified,
-    readingTime: readingTimeMinutes(raw.content.rendered),
+    readingTime: readingTimeMinutes(raw.content?.rendered),
     image,
     imageAlt: media?.alt_text || decodeEntities(raw.title.rendered),
     author: author
