@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, Moon, Search, Sun, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const NAV = [
@@ -12,7 +12,6 @@ const NAV = [
 export function SiteNav() {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
-  const [dark, setDark] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -23,19 +22,9 @@ export function SiteNav() {
   }, []);
 
   useEffect(() => {
-    const saved = typeof window !== "undefined" ? localStorage.getItem("ve-theme") : null;
-    const prefers = typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const isDark = saved ? saved === "dark" : prefers;
-    setDark(isDark);
-    document.documentElement.classList.toggle("dark", isDark);
+    document.documentElement.classList.remove("dark");
+    try { localStorage.setItem("ve-theme", "light"); } catch {}
   }, []);
-
-  const toggleTheme = () => {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("ve-theme", next ? "dark" : "light");
-  };
 
   return (
     <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:pt-5">
