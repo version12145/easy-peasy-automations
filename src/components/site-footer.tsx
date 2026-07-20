@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Github, Instagram, Linkedin, Twitter, Youtube } from "lucide-react";
-import logo from "@/assets/veducate-mark-only.png.asset.json";
+import { SiteLogoImg } from "@/components/site-nav";
 
 const SOCIALS = [
   { Icon: Linkedin, href: "#", label: "LinkedIn" },
