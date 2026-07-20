@@ -290,13 +290,9 @@ export const getHomepage = createServerFn({ method: "GET" })
           per_page: String(postsPerSection),
           categories: String(cat.id),
         });
-        try {
-          const { body } = await wpFetch(`/posts?${p.toString()}`);
-          const raw = JSON.parse(body) as WPPostRaw[];
-          return { category: cat, articles: raw.map(normalizePost) };
-        } catch {
-          return { category: cat, articles: [] };
-        }
+        const res = await wpFetch(`/posts?${p.toString()}`).catch(() => null);
+        const raw = safeJson<WPPostRaw[]>(res?.body, []);
+        return { category: cat, articles: raw.map(normalizePost) };
       })
     );
 
