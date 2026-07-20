@@ -58,7 +58,7 @@ export function SiteFooter() {
         {/* SECTION 2 — Brand identity, compact */}
         <div className="mt-16 flex flex-col items-center text-center">
           <div className="flex items-center gap-3">
-            <img src={logo.url} alt="VEducate Academy" className="h-10 w-auto" />
+            <SiteLogoImg className="h-10 w-auto" />
             <span className="font-serif text-2xl text-navy">VEducate Academy</span>
           </div>
           <div className="mt-3 text-sm font-medium text-navy/80">
