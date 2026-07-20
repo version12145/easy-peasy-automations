@@ -2,8 +2,9 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { useEffect, useState, Suspense } from "react";
-import logo from "@/assets/veducate-mark-only.png.asset.json";
-import { listTags } from "@/lib/wordpress.functions";
+import logoFallback from "@/assets/veducate-mark-only.png.asset.json";
+import { listTags, getSiteLogo } from "@/lib/wordpress.functions";
+import { useQuery } from "@tanstack/react-query";
 
 const STATIC_NAV = [
   { to: "/", label: "Home" },
