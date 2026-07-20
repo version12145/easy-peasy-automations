@@ -226,6 +226,14 @@
   0%, 100% { transform: translateY(0) scale(1); }
   50%      { transform: translateY(-10px) scale(1.03); }
 }
+@keyframes loader-slide {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(400%); }
+}
+@utility animate-loader-slide {
+  animation: loader-slide 1.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
 
 @utility animate-fade-up {
   animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
