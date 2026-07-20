@@ -1,4 +1,4 @@
-export const WP_BASE = "https://blog.veducateacademy.com";
+export const WP_BASE = "https://veducateacademy.wasmer.app";
 export const WP_API = `${WP_BASE}/wp-json/wp/v2`;
 
 export type WPRendered = { rendered: string };
