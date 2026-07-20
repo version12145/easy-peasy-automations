@@ -19,6 +19,16 @@ const trendingTagsQO = queryOptions({
   staleTime: 5 * 60_000,
 });
 
+export function SiteLogoImg({ className }: { className?: string }) {
+  const { data } = useQuery({
+    queryKey: ["site-logo"],
+    queryFn: () => getSiteLogo(),
+    staleTime: 60 * 60_000,
+  });
+  const src = data?.url || logoFallback.url;
+  return <img src={src} alt="VEducate Academy" className={className} />;
+}
+
 function TrendingDropdown() {
   const { data: tags } = useSuspenseQuery(trendingTagsQO);
   const [open, setOpen] = useState(false);
