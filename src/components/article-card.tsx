@@ -4,7 +4,9 @@ import { formatDate, type Article } from "@/lib/wordpress";
 
 type Size = "sm" | "md" | "lg";
 
-export function ArticleCard({ article, size = "md", index = 0 }: { article: Article; size?: Size; index?: number }) {
+import { memo } from "react";
+
+function ArticleCardImpl({ article, size = "md", index = 0, eager = false }: { article: Article; size?: Size; index?: number; eager?: boolean }) {
   const imgH = size === "lg" ? "aspect-[16/10]" : size === "sm" ? "aspect-[4/3]" : "aspect-[3/2]";
   const titleCls =
     size === "lg"
@@ -13,12 +15,13 @@ export function ArticleCard({ article, size = "md", index = 0 }: { article: Arti
       ? "text-base font-semibold leading-snug tracking-tight"
       : "text-lg sm:text-xl font-semibold leading-snug tracking-tight";
 
+  const animate = index < 6;
   return (
     <Link
       to="/articles/$slug"
       params={{ slug: article.slug }}
-      className="group block h-full animate-fade-up"
-      style={{ animationDelay: `${index * 60}ms` }}
+      className={`group block h-full ${animate ? "animate-fade-up" : ""}`}
+      style={animate ? { animationDelay: `${index * 40}ms` } : undefined}
     >
       <article className="glass hover-lift flex h-full flex-col overflow-hidden rounded-3xl">
         <div className={`relative ${imgH} w-full overflow-hidden bg-surface-2`}>
@@ -26,13 +29,16 @@ export function ArticleCard({ article, size = "md", index = 0 }: { article: Arti
             <img
               src={article.image}
               alt={article.imageAlt}
-              loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+              loading={eager ? "eager" : "lazy"}
+              decoding="async"
+              fetchPriority={eager ? "high" : "auto"}
+              className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
             />
           ) : (
             <div className="h-full w-full grad-navy" />
           )}
-          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
           {article.category ? (
             <div className="absolute left-4 top-4">
               <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-navy backdrop-blur-md">
