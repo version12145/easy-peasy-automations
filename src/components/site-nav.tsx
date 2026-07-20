@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { useEffect, useState, Suspense } from "react";
-import logo from "@/assets/veducate-mark.png.asset.json";
+import logo from "@/assets/veducate-mark-only.png.asset.json";
 import { listTags } from "@/lib/wordpress.functions";
 
 const STATIC_NAV = [
@@ -82,9 +82,9 @@ export function SiteNav() {
           scrolled ? "translate-y-0 scale-[0.99]" : ""
         }`}
       >
-        <Link to="/" className="flex items-center gap-2.5 pl-1 pr-1 sm:pr-2" aria-label="VEducate Academy">
-          <img src={logo.url} alt="VEducate Academy" className="h-6 w-auto shrink-0 sm:h-7" />
-          <span className="hidden text-sm font-bold tracking-tight text-navy sm:inline">VEducate</span>
+        <Link to="/" className="flex items-center gap-2 pl-1 pr-1 sm:pr-2" aria-label="VEducate Academy">
+          <img src={logo.url} alt="VEducate Academy" className="h-7 w-auto shrink-0 object-contain sm:h-8" />
+          <span className="hidden text-sm font-bold tracking-tight text-navy sm:inline">VEducate Academy</span>
         </Link>
 
         <div className="mx-2 hidden h-6 w-px bg-border sm:block" />
