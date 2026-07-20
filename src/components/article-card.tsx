@@ -84,3 +84,6 @@ function ArticleCardImpl({ article, size = "md", index = 0, eager = false }: { a
     </Link>
   );
 }
+
+export const ArticleCard = memo(ArticleCardImpl);
+
