@@ -308,3 +308,26 @@ export const getHomepage = createServerFn({ method: "GET" })
       totalArticles: Number(latestRes?.res.headers.get("x-wp-total") ?? latestRaw.length),
     };
   });
+
+export const getSiteLogo = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    const rootRes = await fetch(`${WP_API.replace(/\/wp\/v2$/, "")}/`, {
+      headers: { Accept: "application/json" },
+    });
+    if (!rootRes.ok) return { url: null as string | null };
+    const root = (await rootRes.json()) as { site_logo?: number; site_icon_url?: string };
+    if (root.site_logo && root.site_logo > 0) {
+      const mediaRes = await fetch(`${WP_API}/media/${root.site_logo}`, {
+        headers: { Accept: "application/json" },
+      });
+      if (mediaRes.ok) {
+        const media = (await mediaRes.json()) as { source_url?: string };
+        if (media.source_url) return { url: media.source_url };
+      }
+    }
+    if (root.site_icon_url) return { url: root.site_icon_url };
+    return { url: null };
+  } catch {
+    return { url: null };
+  }
+});
