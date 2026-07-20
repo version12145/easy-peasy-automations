@@ -84,7 +84,7 @@ export function SiteNav() {
         }`}
       >
         <Link to="/" className="flex items-center gap-2 pl-1 pr-1 sm:pr-2" aria-label="VEducate Academy">
-          <img src={logo.url} alt="VEducate Academy" className="h-7 w-auto shrink-0 object-contain sm:h-8" />
+          <SiteLogoImg className="h-7 w-auto shrink-0 object-contain sm:h-8" />
           <span className="hidden text-sm font-bold tracking-tight text-navy sm:inline">VEducate Academy</span>
         </Link>
 
