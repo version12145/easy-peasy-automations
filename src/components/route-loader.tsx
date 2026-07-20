@@ -13,19 +13,24 @@ export function RouteLoader() {
     select: (s) => s.isLoading || s.isTransitioning,
   });
 
-  const [visible, setVisible] = useState(true); // show on first paint
-  const shownAtRef = useRef<number>(Date.now());
+  const [visible, setVisible] = useState(false); // don't block first paint
+  const shownAtRef = useRef<number>(0);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(false);
 
   useEffect(() => {
+    // Skip the very first effect — initial hydration must not show the loader.
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
     if (isLoading) {
       shownAtRef.current = Date.now();
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
       setVisible(true);
       return;
     }
-    // Route done — keep overlay for a minimum window so animation reads.
-    const MIN = 700;
+    const MIN = 250;
     const elapsed = Date.now() - shownAtRef.current;
     const wait = Math.max(0, MIN - elapsed);
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
